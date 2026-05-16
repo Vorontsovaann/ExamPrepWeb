@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  exam-prep-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: exam-prep-v18
+    ports:
+      - "${APP_PORT:-8018}:8080"
+    volumes:
+      - sqlite_data:/app/Data
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ConnectionStrings__DefaultConnection=Data Source=/app/Data/app.db
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/courses"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+volumes:
+  sqlite_data:
+    driver: local

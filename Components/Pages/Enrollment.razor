@@ -1,0 +1,151 @@
+@page "/enrollment/{CourseId:int}"
+@using ExamPrepWeb.Models
+@using ExamPrepWeb.Services
+@using System.ComponentModel.DataAnnotations
+@inject ICourseService CourseService
+@inject NavigationManager Navigation
+
+<PageTitle>Запись на курс</PageTitle>
+
+<h3>✍️ Запись на курс</h3>
+
+@if (_course == null)
+{
+    <div class="alert alert-danger">
+        ❌ Курс не найден. <a href="/courses">Вернуться к списку курсов</a>
+    </div>
+}
+else
+{
+    <div class="card mb-4 border-primary">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">@_course.Title</h5>
+        </div>
+        <div class="card-body">
+            <p class="card-text">
+                <strong>📖 Предмет:</strong> @_course.Subject<br>
+                <strong>💰 Стоимость:</strong> @_course.Price.ToString("C", new System.Globalization.CultureInfo("ru-RU"))<br>
+                <strong>📅 Дата начала:</strong> @_course.StartDate.ToString("dd.MM.yyyy")<br>
+                <strong>👨‍🏫 Преподаватель:</strong> @_course.TeacherName<br>
+                @if (!string.IsNullOrEmpty(_course.Description))
+                {
+                    <strong>📝 Описание:</strong> @_course.Description
+                }
+            </p>
+        </div>
+    </div>
+
+    @if (!string.IsNullOrEmpty(_message))
+    {
+        <div class="alert @(_isSuccess ? "alert-success" : "alert-danger")">
+            @_message
+        </div>
+    }
+
+    <EditForm Model="@_enrollmentForm" OnValidSubmit="HandleValidSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary class="alert alert-danger" />
+        
+        <div class="mb-3">
+            <label class="form-label">Ваше имя *</label>
+            <InputText @bind-Value="_enrollmentForm.FirstName" 
+                       class="form-control" 
+                       placeholder="Введите имя" />
+            <ValidationMessage For="@(() => _enrollmentForm.FirstName)" 
+                               class="text-danger" />
+        </div>
+        
+        <div class="mb-3">
+            <label class="form-label">Ваша фамилия *</label>
+            <InputText @bind-Value="_enrollmentForm.LastName" 
+                       class="form-control" 
+                       placeholder="Введите фамилию" />
+            <ValidationMessage For="@(() => _enrollmentForm.LastName)" 
+                               class="text-danger" />
+        </div>
+        
+        <div class="mb-3">
+            <label class="form-label">Email *</label>
+            <InputText @bind-Value="_enrollmentForm.Email" 
+                       class="form-control" 
+                       placeholder="example@email.com" />
+            <ValidationMessage For="@(() => _enrollmentForm.Email)" 
+                               class="text-danger" />
+        </div>
+        
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-success" disabled="@_isSubmitting">
+                @(_isSubmitting ? "Запись..." : "✅ Записаться на курс")
+            </button>
+            <a href="/courses" class="btn btn-secondary">← Назад к курсам</a>
+        </div>
+    </EditForm>
+}
+
+@code {
+    [Parameter] public int CourseId { get; set; }
+    
+    private Course? _course;
+    private string _message = "";
+    private bool _isSuccess = false;
+    private bool _isSubmitting = false;
+    private EnrollmentForm _enrollmentForm = new();
+    
+    public class EnrollmentForm
+    {
+        [Required(ErrorMessage = "Имя обязательно")]
+        [StringLength(50, MinimumLength = 2, ErrorMessage = "От 2 до 50 символов")]
+        public string FirstName { get; set; } = string.Empty;
+        
+        [Required(ErrorMessage = "Фамилия обязательна")]
+        [StringLength(50, MinimumLength = 2, ErrorMessage = "От 2 до 50 символов")]
+        public string LastName { get; set; } = string.Empty;
+        
+        [Required(ErrorMessage = "Email обязателен")]
+        [EmailAddress(ErrorMessage = "Неверный формат email")]
+        public string Email { get; set; } = string.Empty;
+    }
+    
+    protected override async Task OnInitializedAsync()
+    {
+        _course = await CourseService.GetCourseDetailsAsync(CourseId);
+    }
+    
+    private async Task HandleValidSubmit()
+    {
+        _isSubmitting = true;
+        StateHasChanged();
+        
+        try
+        {
+            var result = await CourseService.EnrollStudentAsync(
+                _enrollmentForm.FirstName,
+                _enrollmentForm.LastName, 
+                _enrollmentForm.Email,
+                CourseId
+            );
+            
+            if (result)
+            {
+                _isSuccess = true;
+                _message = $"✅ Вы успешно записаны на курс \"{_course?.Title}\"!";
+                _enrollmentForm = new EnrollmentForm();
+            }
+            else
+            {
+                _isSuccess = false;
+                _message = "❌ Вы уже записаны на этот курс или произошла ошибка.";
+            }
+        }
+        catch (Exception ex)
+        {
+            _isSuccess = false;
+            _message = $"❌ Ошибка при записи: {ex.Message}";
+        }
+        finally
+        {
+            _isSubmitting = false;
+            StateHasChanged();
+        }
+    }
+}

@@ -1,0 +1,69 @@
+@page "/courses"
+@inject ICourseService CourseService
+@inject NavigationManager Navigation
+
+<PageTitle>Курсы подготовки</PageTitle>
+
+<h3>📚 Доступные курсы подготовки к экзаменам</h3>
+
+@if (_courses == null)
+{
+    <div class="alert alert-info">
+        <em>Загрузка списка курсов...</em>
+    </div>
+}
+else if (_courses.Count == 0)
+{
+    <div class="alert alert-warning">
+        К сожалению, курсов пока нет. Попробуйте позже.
+    </div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead class="table-primary">
+                <tr>
+                    <th>Название курса</th>
+                    <th>Предмет</th>
+                    <th>Цена</th>
+                    <th>Дата начала</th>
+                    <th>Преподаватель</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var course in _courses)
+                {
+                    <tr>
+                        <td><strong>@course.Title</strong></td>
+                        <td>@course.Subject</td>
+                        <td>@course.Price.ToString("C", new System.Globalization.CultureInfo("ru-RU"))</td>
+                        <td>@course.StartDate.ToString("dd.MM.yyyy")</td>
+                        <td>@course.TeacherName</td>
+                        <td>
+                            <button class="btn btn-primary btn-sm" 
+                                    @onclick="() => StartEnrollment(course.CourseId)">
+                                Записаться
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+@code {
+    private List<Course>? _courses;
+    
+    protected override async Task OnInitializedAsync()
+    {
+        _courses = await CourseService.GetAvailableCoursesAsync();
+    }
+    
+    private void StartEnrollment(int courseId)
+    {
+        Navigation.NavigateTo($"/enrollment/{courseId}");
+    }
+}

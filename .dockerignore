@@ -1,9 +1,9 @@
-# Исключаем файлы сборки
+# Файлы сборки
 bin/
 obj/
 publish/
 
-# Исключаем служебные файлы IDE
+# Файлы IDE
 .vs/
 .vscode/
 *.suo
@@ -11,22 +11,26 @@ publish/
 *.userosscache
 *.sln.docstates
 
-# Исключаем локальную базу данных (чтобы не попадала в образ)
+# База данных
 *.db
 *.db-shm
 *.db-wal
 Data/app.db
 
-# Исключаем логи и временные файлы
+# Логи
 logs/
 *.log
-temp/
 
-# Исключаем файлы системы контроля версий
-.git/
-.gitignore
-
-# Исключаем Docker-файлы (не нужны внутри образа)
+# Docker
 Dockerfile*
 docker-compose*
 .dockerignore
+
+# Git
+.git/
+.gitignore
+
+# Документы
+*.md
+README*
+LICENSE
