@@ -2,22 +2,24 @@
 
 <div class="page">
     <div class="sidebar">
-        <NavMenu />
+        <!-- Если нужно боковое меню, можно оставить NavMenu здесь -->
     </div>
 
-    <main>
-        <div class="top-row px-4">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
-        </div>
+    <div class="main">
+        <header class="top-row px-4">
+            <!-- Верхняя навигация -->
+            <NavMenu />
+        </header>
 
         <article class="content px-4">
+            <!-- Сюда рендерится страница (Index, Courses и т.д.) -->
             @Body
         </article>
-    </main>
-</div>
-
-<div id="blazor-error-ui" data-nosnippet>
-    An unhandled error has occurred.
-    <a href="." class="reload">Reload</a>
-    <span class="dismiss">🗙</span>
+        
+        <footer class="footer text-center">
+            <div class="container">
+                <p>&copy; 2026 ExamPrepCourses. Все права защищены.</p>
+            </div>
+        </footer>
+    </div>
 </div>

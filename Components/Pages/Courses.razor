@@ -1,68 +1,63 @@
 @page "/courses"
+@using ExamPrepWeb.Models
+@using ExamPrepWeb.Services
 @inject ICourseService CourseService
 @inject NavigationManager Navigation
 
-<PageTitle>Курсы подготовки</PageTitle>
+<PageTitle>Курсы</PageTitle>
 
-<h3>📚 Доступные курсы подготовки к экзаменам</h3>
+<div class="container">
+    <h2 class="page-title">Доступные курсы</h2>
 
-@if (_courses == null)
-{
-    <div class="alert alert-info">
-        <em>Загрузка списка курсов...</em>
-    </div>
-}
-else if (_courses.Count == 0)
-{
-    <div class="alert alert-warning">
-        К сожалению, курсов пока нет. Попробуйте позже.
-    </div>
-}
-else
-{
-    <div class="table-responsive">
-        <table class="table table-striped table-hover">
-            <thead class="table-primary">
-                <tr>
-                    <th>Название курса</th>
-                    <th>Предмет</th>
-                    <th>Цена</th>
-                    <th>Дата начала</th>
-                    <th>Преподаватель</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var course in _courses)
-                {
-                    <tr>
-                        <td><strong>@course.Title</strong></td>
-                        <td>@course.Subject</td>
-                        <td>@course.Price.ToString("C", new System.Globalization.CultureInfo("ru-RU"))</td>
-                        <td>@course.StartDate.ToString("dd.MM.yyyy")</td>
-                        <td>@course.TeacherName</td>
-                        <td>
-                            <button class="btn btn-primary btn-sm" 
-                                    @onclick="() => StartEnrollment(course.CourseId)">
+    @if (_courses == null)
+    {
+        <div class="text-center py-5">
+            <div class="spinner-border" role="status">
+                <span class="visually-hidden">Загрузка...</span>
+            </div>
+            <p class="mt-2 text-muted">Загрузка курсов...</p>
+        </div>
+    }
+    else if (_courses.Count == 0)
+    {
+        <div class="alert alert-warning text-center">Курсов пока нет.</div>
+    }
+    else
+    {
+        <div class="course-grid">
+            @foreach (var course in _courses.OrderBy(c => c.Title))
+            {
+                <div class="card d-flex flex-column">
+                    <div class="card-body d-flex flex-column">
+                        <h4 style="margin-bottom: 0.5rem;">@course.Title</h4>
+                        <p class="text-muted" style="margin-bottom: 0.2rem;">@course.Subject</p>
+                        
+                        <div class="mt-auto">
+                            <div class="course-card-price">@course.Price.ToString("N0") ₽</div>
+                            <div class="d-flex justify-content-between align-items-center text-muted mb-3" style="font-size: 0.9rem;">
+                                <span>📅 @course.StartDate.ToString("dd.MM.yyyy")</span>
+                                <span>👨‍🏫 @course.TeacherName</span>
+                            </div>
+                            <button class="btn btn-success w-100" @onclick="() => GoToEnrollment(course.CourseId)">
                                 Записаться
                             </button>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
-}
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
 
 @code {
     private List<Course>? _courses;
-    
+
     protected override async Task OnInitializedAsync()
     {
         _courses = await CourseService.GetAvailableCoursesAsync();
     }
-    
-    private void StartEnrollment(int courseId)
+
+    private void GoToEnrollment(int courseId)
     {
         Navigation.NavigateTo($"/enrollment/{courseId}");
     }
