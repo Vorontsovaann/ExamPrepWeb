@@ -1,0 +1,40 @@
+# === Visual Studio / .NET ===
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+build/
+[Bb]in/
+[Oo]bj/
+*.pdb
+*.userprefs
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# === База данных ===
+*.db
+*.db-shm
+*.db-wal
+Data/app.db
+
+# === Логи и кэш ===
+logs/
+*.log
+[Nn]u[Pp]g/
+packages/
+*.nuspec
+
+# === Docker ===
+.docker/
+docker-compose.override.yml
+
+# === Система контроля версий ===
+.git/
+.gitignore
+
+# === Пользовательские настройки ===
+*.swp
+*.swo
+.DS_Store

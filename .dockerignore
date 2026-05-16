@@ -1,0 +1,32 @@
+# Исключаем файлы сборки
+bin/
+obj/
+publish/
+
+# Исключаем служебные файлы IDE
+.vs/
+.vscode/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Исключаем локальную базу данных (чтобы не попадала в образ)
+*.db
+*.db-shm
+*.db-wal
+Data/app.db
+
+# Исключаем логи и временные файлы
+logs/
+*.log
+temp/
+
+# Исключаем файлы системы контроля версий
+.git/
+.gitignore
+
+# Исключаем Docker-файлы (не нужны внутри образа)
+Dockerfile*
+docker-compose*
+.dockerignore
