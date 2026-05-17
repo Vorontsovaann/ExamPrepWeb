@@ -1,12 +1,20 @@
 ﻿@inherits LayoutComponentBase
 
 <div class="page-wrapper">
-    <NavMenu />
-    
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a class="navbar-brand" href="/">🎓 ExamPrepCourses</a>
+            <div class="nav-links">
+                <NavLink href="/" class="nav-link" Match="NavLinkMatch.All">Главная</NavLink>
+                <NavLink href="/courses" class="nav-link">Курсы</NavLink>
+            </div>
+        </div>
+    </nav>
+
     <main class="main-content">
         @Body
     </main>
-    
+
     <footer class="footer">
         <div class="container">
             <p>© 2026 ExamPrepCourses. Все права защищены.</p>

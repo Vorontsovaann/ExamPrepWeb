@@ -1,26 +1,23 @@
-using Microsoft.EntityFrameworkCore;
 using ExamPrepWeb.Data;
-using ExamPrepWeb.Data.Repositories;
 using ExamPrepWeb.Services;
+using Microsoft.EntityFrameworkCore;
+using ExamPrepWeb.Components;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Настройка базы данных
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlite(connectionString));
+    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Dependency Injection
-builder.Services.AddScoped<ICourseRepository, CourseRepository>();
 builder.Services.AddScoped<ICourseService, CourseService>();
 
-// Blazor Server
+// Добавь эту строку для API контроллеров
+builder.Services.AddControllers();
+
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
 var app = builder.Build();
 
-// Конвейер обработки запросов
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error", createScopeForErrors: true);
@@ -31,15 +28,16 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseAntiforgery();
 
-// Маршрутизация Blazor
-app.MapRazorComponents<ExamPrepWeb.Components.App>()
+app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
 
-// Инициализация БД
+// Добавь маппинг контроллеров
+app.MapControllers();
+
 using (var scope = app.Services.CreateScope())
 {
-    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    dbContext.Database.EnsureCreated();
+    var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    context.Database.EnsureCreated();
 }
 
 app.Run();

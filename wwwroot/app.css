@@ -1,245 +1,198 @@
-/* ===== ТЁМНО-БОРДОВАЯ СХЕМА ===== */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap');
 
 :root {
-  --primary: #4a0e0e;        /* Тёмно-бордовый */
-  --primary-dark: #2d0808;   /* Очень тёмный */
-  --primary-light: #6b1515;  /* Чуть светлее */
-  --accent: #f97316;         /* Оранжевый для кнопок */
-  --bg: #fafafa;             /* Светлый фон */
-  --text: #1f2937;           /* Тёмный текст */
-  --text-muted: #6b7280;     /* Серый текст */
-  --border: #e5e7eb;
-  --radius: 16px;
+    --primary: #4a0e0e;
+    --primary-light: #7a1a2a;
+    --accent: #f97316;
+    --bg: #fafafa;
+    --text: #1f2937;
+    --text-muted: #6b7280;
+    --border: #e5e7eb;
 }
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-/* ГЛАВНАЯ СТРУКТУРА ДЛЯ "ЛИПКОГО" ФУТЕРА */
-html, body {
-  height: 100%;
-}
+* { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
-  font-family: 'Inter', sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  line-height: 1.6;
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh; /* Растягиваем на весь экран */
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
 }
 
 .page-wrapper {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-  flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
 }
 
-.main-content {
-  flex: 1; /* Заставляет контент занимать всё свободное место, толкая футер вниз */
-}
+.main-content { flex: 1; }
 
-/* ===== НАВИГАЦИЯ ===== */
 .navbar {
-  background: white;
-  padding: 1.2rem 0;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-  position: sticky;
-  top: 0;
-  z-index: 100;
+    background: white;
+    padding: 1rem 0;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    position: sticky;
+    top: 0;
+    z-index: 100;
 }
 
 .navbar-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 2rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1rem;
-  text-align: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
 }
 
 .navbar-brand {
-  font-size: 1.75rem;
-  font-weight: 800;
-  color: var(--primary) !important;
-  text-decoration: none;
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--primary);
+    text-decoration: none;
 }
 
 .nav-links {
-  display: flex;
-  gap: 2rem;
-  justify-content: center;
+    display: flex;
+    gap: 1.5rem;
 }
 
 .nav-link {
-  color: var(--text-muted) !important;
-  text-decoration: none;
-  font-weight: 600;
-  padding: 0.5rem 1.5rem;
-  border-radius: 8px;
-  transition: 0.3s;
+    color: var(--text-muted);
+    text-decoration: none;
+    font-weight: 600;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    transition: 0.3s;
 }
 
 .nav-link:hover, .nav-link.active {
-  color: var(--primary) !important;
-  background: rgba(74, 14, 14, 0.1);
+    color: var(--primary);
+    background: rgba(74, 14, 14, 0.1);
 }
 
-/* ===== КОНТЕЙНЕР ===== */
 .container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
 }
 
-/* ===== HERO СЕКЦИЯ ===== */
 .hero-section {
-  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-  color: white;
-  padding: 5rem 2rem;
-  text-align: center;
-  margin-bottom: 3rem;
-  border-radius: 0 0 2rem 2rem;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+    color: white;
+    padding: 4rem 2rem;
+    text-align: center;
+    border-radius: 0 0 2rem 2rem;
+    margin-bottom: 3rem;
 }
 
 .hero-section h1 {
-  font-size: 3rem;
-  font-weight: 900;
-  margin-bottom: 1.5rem;
-  text-align: center;
+    font-size: 3rem;
+    margin-bottom: 1rem;
 }
 
 .hero-section p {
-  font-size: 1.2rem;
-  max-width: 600px;
-  margin: 0 auto 2rem;
-  text-align: center;
+    font-size: 1.2rem;
+    max-width: 600px;
+    margin: 0 auto 2rem;
 }
 
-/* ===== КНОПКИ ===== */
 .btn {
-  display: inline-block;
-  padding: 1rem 2.5rem;
-  font-size: 1.1rem;
-  font-weight: 700;
-  border-radius: 12px;
-  text-decoration: none;
-  transition: 0.3s;
-  cursor: pointer;
-  border: none;
-  text-align: center;
+    display: inline-block;
+    padding: 1rem 2rem;
+    border-radius: 12px;
+    text-decoration: none;
+    font-weight: 700;
+    cursor: pointer;
+    border: none;
+    transition: 0.3s;
 }
 
 .btn-primary {
-  background: var(--accent);
-  color: white;
-  box-shadow: 0 4px 15px rgba(249, 115, 22, 0.4);
+    background: var(--accent);
+    color: white;
+    box-shadow: 0 4px 15px rgba(249, 115, 22, 0.4);
 }
 
 .btn-primary:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 25px rgba(249, 115, 22, 0.5);
-}
-
-/* ===== СЕТКИ ===== */
-.features-grid, .course-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 2rem;
-  margin: 2rem 0;
-}
-
-/* ===== КАРТОЧКИ ===== */
-.card, .course-card {
-  background: white;
-  border-radius: var(--radius);
-  padding: 2rem;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between; /* Чтобы кнопки были на одном уровне */
-}
-
-.card h5, .course-card h3 {
-  color: var(--primary);
-  margin-bottom: 1rem;
-  font-size: 1.3rem;
-  text-align: center;
-}
-
-.course-price {
-  font-size: 2rem;
-  font-weight: 900;
-  color: var(--primary);
-  margin: 1rem 0;
-  text-align: center;
-}
-
-.course-meta {
-  margin: 1rem 0;
-  color: var(--text-muted);
-  text-align: center;
+    transform: translateY(-3px);
 }
 
 .page-title, .section-title {
-  font-size: 2.5rem;
-  color: var(--primary);
-  margin: 2rem 0;
-  font-weight: 900;
-  text-align: center;
+    text-align: center;
+    color: var(--primary);
+    margin-bottom: 2rem;
 }
 
-/* ===== ФОРМА ===== */
-.form-container {
-  max-width: 550px;
-  margin: 2rem auto;
-  background: white;
-  padding: 3rem;
-  border-radius: 20px;
-  box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+.course-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+}
+
+.course-card, .card {
+    background: white;
+    padding: 2rem;
+    border-radius: 16px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    text-align: center;
+    border: 1px solid var(--border);
+}
+
+.course-price {
+    font-size: 2rem;
+    font-weight: 900;
+    color: var(--primary);
+    margin: 1rem 0;
+}
+
+.form-wrapper {
+    max-width: 500px;
+    margin: 2rem auto;
+    background: white;
+    padding: 2.5rem;
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.1);
 }
 
 .form-control {
-  width: 100%;
-  padding: 0.9rem;
-  border: 2px solid var(--border);
-  border-radius: 10px;
-  font-size: 1rem;
-  transition: 0.3s;
+    width: 100%;
+    padding: 0.9rem;
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    font-size: 1rem;
 }
 
 .form-control:focus {
-  outline: none;
-  border-color: var(--primary);
-  box-shadow: 0 0 0 4px rgba(74, 14, 14, 0.1);
+    outline: none;
+    border-color: var(--primary);
 }
 
-/* ===== ФУТЕР (Всегда внизу) ===== */
+.success-box {
+    text-align: center;
+    background: #d1fae5;
+    color: #065f46;
+    padding: 3rem;
+    border-radius: 20px;
+    max-width: 600px;
+    margin: 3rem auto;
+}
+
 .footer {
-  background: #1f2937;
-  color: white;
-  padding: 1.5rem 0;
-  margin-top: auto; /* Ключевое свойство для прижатия */
-  text-align: center;
-  border-top: 4px solid var(--primary); /* Красивая бордовая полоска сверху */
+    background: #1f2937;
+    color: white;
+    padding: 2rem 0;
+    text-align: center;
+    margin-top: auto;
 }
 
-/* ===== АДАПТИВНОСТЬ ===== */
-@media (max-width: 900px) {
-  .features-grid, .course-grid {
-    grid-template-columns: 1fr;
-  }
-  
-  .hero-section h1 {
-    font-size: 2rem;
-  }
+@media (max-width: 768px) {
+    .hero-section h1 { font-size: 2rem; }
+    .course-grid, .features-grid { grid-template-columns: 1fr; }
 }

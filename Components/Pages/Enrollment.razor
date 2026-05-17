@@ -1,98 +1,123 @@
 @page "/enrollment/{CourseId:int}"
 @inject ICourseService CourseService
+@inject NavigationManager Navigation
 
 <PageTitle>Запись на курс</PageTitle>
 
 <div class="container">
     @if (_course == null)
     {
-        <p style="text-align: center; padding: 2rem;">Курс не найден.</p>
-    }
-    else if (_success)
-    {
-        <div style="padding: 3rem; text-align: center; background: #d1fae5; border-radius: 16px; border: 3px solid #10b981;">
-            <div style="font-size: 5rem; margin-bottom: 1rem;">✅</div>
-            <h2 style="color: #065f46; margin-bottom: 1rem;">Заявка принята!</h2>
-            <p style="color: #047857; font-size: 1.2rem;">@_message</p>
-            <a href="/courses" class="btn btn-primary" style="display: inline-block; margin-top: 1.5rem;">Вернуться к курсам</a>
+        <div style="text-align: center; padding: 3rem;">
+            <h3>Курс не найден</h3>
+            <a href="/courses" class="btn btn-primary">← Назад к курсам</a>
         </div>
     }
     else
     {
-        <div class="form-container" style="max-width: 550px; margin: 2rem auto; background: white; padding: 3rem; border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.1);">
-            <h2 style="text-align: center; margin-bottom: 0.5rem; color: var(--primary);">Запись на курс</h2>
-            <p style="text-align: center; color: var(--text-muted); margin-bottom: 2rem;">@_course.Title</p>
+        <div class="form-wrapper">
+            <h2 style="text-align: center;">Запись на курс</h2>
+            <p style="text-align: center; color: #6b7280; margin-bottom: 2rem;">@_course.Title</p>
 
-            <div id="debugBox" style="background: #f0f9ff; padding: 1rem; border-radius: 8px; margin-bottom: 2rem; font-family: monospace; font-size: 0.9rem; border: 2px solid #3b82f6;">
+            <!-- Отладка: показывает, что введено в поля -->
+            <div id="debugBox" style="background: #f0f9ff; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; font-family: monospace; font-size: 0.85rem; border: 1px solid #bfdbfe;">
                 <strong>📊 Данные:</strong><br>
                 ФИО: <span id="debugFio">(пусто)</span><br>
                 Телефон: <span id="debugTel">(пусто)</span><br>
                 Email: <span id="debugEml">(пусто)</span>
             </div>
 
-            <form id="enrollForm" onsubmit="return false;">
-                <div style="margin-bottom: 1.5rem; text-align: left;">
-                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 700;">ФИО *</label>
-                    <input type="text" id="inputFio" oninput="updateDebug('fio', this.value)" class="form-control" placeholder="Иванов Иван Иванович" style="width: 100%; padding: 0.9rem; border: 2px solid var(--border); border-radius: 10px; font-size: 1rem;" />
-                </div>
+            <div style="margin-bottom: 1.5rem;">
+                <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">ФИО *</label>
+                <input type="text" id="inputFio" oninput="updateDebug('fio', this.value)" class="form-control" placeholder="Иванов Иван Иванович" />
+            </div>
 
-                <div style="margin-bottom: 1.5rem; text-align: left;">
-                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 700;">Телефон *</label>
-                    <input type="tel" id="inputTel" oninput="updateDebug('tel', this.value)" class="form-control" placeholder="+7 (999) 000-00-00" style="width: 100%; padding: 0.9rem; border: 2px solid var(--border); border-radius: 10px; font-size: 1rem;" />
-                </div>
+            <div style="margin-bottom: 1.5rem;">
+                <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Телефон *</label>
+                <input type="tel" id="inputTel" oninput="updateDebug('tel', this.value)" class="form-control" placeholder="+7 (999) 000-00-00" />
+            </div>
 
-                <div style="margin-bottom: 2rem; text-align: left;">
-                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 700;">Email *</label>
-                    <input type="email" id="inputEml" oninput="updateDebug('eml', this.value)" class="form-control" placeholder="student@example.com" style="width: 100%; padding: 0.9rem; border: 2px solid var(--border); border-radius: 10px; font-size: 1rem;" />
-                </div>
+            <div style="margin-bottom: 1.5rem;">
+                <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Email *</label>
+                <input type="email" id="inputEml" oninput="updateDebug('eml', this.value)" class="form-control" placeholder="student@example.com" />
+            </div>
 
-                <button type="button" onclick="submitForm()" class="btn btn-primary" style="width: 100%; padding: 1.1rem; font-size: 1.15rem;">
-                    Подтвердить запись
-                </button>
-            </form>
+            <!-- Кнопка вызывает JavaScript функцию -->
+            <button type="button" onclick="submitEnrollment()" class="btn btn-primary" style="width: 100%; padding: 1rem; font-size: 1.1rem; cursor: pointer;">
+                Подтвердить запись
+            </button>
 
-            <div style="text-align: center; margin-top: 2rem;">
-                <a href="/courses" style="color: var(--text-muted); text-decoration: none;">← Назад к курсам</a>
+            <div style="text-align: center; margin-top: 1.5rem;">
+                <a href="/courses">← Назад к курсам</a>
             </div>
         </div>
     }
 </div>
 
+<!-- JavaScript для отправки данных -->
 <script>
+    // Функция обновления синей панели отладки
     function updateDebug(field, value) {
-        const debugEl = document.getElementById('debug' + field.charAt(0).toUpperCase() + field.slice(1));
-        if (debugEl) {
-            debugEl.textContent = value || '(пусто)';
+        const el = document.getElementById('debug' + field.charAt(0).toUpperCase() + field.slice(1));
+        if (el) {
+            el.textContent = value || '(пусто)';
         }
     }
 
-    function submitForm() {
+    // Основная функция отправки
+    async function submitEnrollment() {
+        // Получаем значения из полей ввода
         const fio = document.getElementById('inputFio').value.trim();
         const tel = document.getElementById('inputTel').value.trim();
         const eml = document.getElementById('inputEml').value.trim();
+        
+        // Получаем ID курса из URL (например, из /enrollment/3 берем 3)
+        const path = window.location.pathname;
+        const courseId = path.split('/').pop();
 
-        if (!fio || !tel || !eml) {
-            alert('⚠️ Заполните все обязательные поля!');
+        console.log('[JS] Попытка отправки:', { fio, tel, eml, courseId });
+
+        // Валидация
+        if (!fio || !eml) {
+            alert('⚠️ Заполните ФИО и Email!');
             return;
         }
 
-        alert('✅ Спасибо, ' + fio + '! Ваша заявка принята.\n\nМы свяжемся с вами по номеру ' + tel);
-        
-        document.getElementById('inputFio').value = '';
-        document.getElementById('inputTel').value = '';
-        document.getElementById('inputEml').value = '';
-        updateDebug('fio', '');
-        updateDebug('tel', '');
-        updateDebug('eml', '');
+        try {
+            // Отправляем запрос на API контроллер
+            const response = await fetch('/api/enrollment', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    fio: fio, 
+                    tel: tel, 
+                    eml: eml, 
+                    courseId: parseInt(courseId) 
+                })
+            });
+
+            // Обрабатываем ответ
+            const result = await response.json();
+
+            if (result.success) {
+                // Если успех — перенаправляем на страницу курсов с флагом success=1
+                window.location.href = '/courses?success=1';
+            } else {
+                // Если ошибка — показываем alert
+                alert('❌ ' + result.message);
+            }
+
+        } catch (error) {
+            console.error('[JS] Ошибка:', error);
+            alert('❌ Ошибка соединения с сервером. Проверьте консоль.');
+        }
     }
 </script>
 
 @code {
     [Parameter] public int CourseId { get; set; }
     private Course? _course;
-    private bool _success = false;
-    private string _message = "";
 
+    // Загрузка данных о курсе при открытии страницы
     protected override async Task OnInitializedAsync()
     {
         _course = await CourseService.GetCourseDetailsAsync(CourseId);
