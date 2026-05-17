@@ -35,23 +35,38 @@ namespace ExamPrepWeb.Data
         private void SeedData(ModelBuilder modelBuilder)
         {
             // Динамические даты: курсы всегда начинаются в будущем
-            var baseDate = new DateTime(2026, 9, 1); 
+            var baseDate = DateTime.Now.AddMonths(3);
 
             modelBuilder.Entity<Course>().HasData(
-                new Course { 
-                    CourseId = 1, Title = "Математика ЕГЭ", Subject = "Математика", 
-                    Price = 5000m, StartDate = baseDate, TeacherName = "Иванов И.И.", 
-                    Description = "Профильный уровень" 
+                new Course
+                {
+                    CourseId = 1,
+                    Title = "Математика ЕГЭ",
+                    Subject = "Математика",
+                    Price = 5000m, // <-- decimal literal (буква m!)
+                    StartDate = baseDate,
+                    TeacherName = "Иванов И.И.",
+                    Description = "Профильный уровень. Подготовка к ЕГЭ по математике."
                 },
-                new Course { 
-                    CourseId = 2, Title = "Английский язык ЕГЭ", Subject = "Английский", 
-                    Price = 7500m, StartDate = baseDate.AddDays(14), TeacherName = "Петрова А.С.", 
-                    Description = "Интенсив" 
+                new Course
+                {
+                    CourseId = 2,
+                    Title = "Английский язык ЕГЭ",
+                    Subject = "Английский",
+                    Price = 7500m, // <-- decimal literal
+                    StartDate = baseDate.AddDays(14),
+                    TeacherName = "Петрова А.С.",
+                    Description = "Интенсивный курс английского языка для сдачи ЕГЭ."
                 },
-                new Course { 
-                    CourseId = 3, Title = "Информатика ЕГЭ", Subject = "Информатика", 
-                    Price = 6000m, StartDate = baseDate.AddMonths(1), TeacherName = "Сидоров В.К.", 
-                    Description = "Python & C++" 
+                new Course
+                {
+                    CourseId = 3,
+                    Title = "Информатика ЕГЭ",
+                    Subject = "Информатика",
+                    Price = 6000m, // <-- decimal literal
+                    StartDate = baseDate.AddMonths(1),
+                    TeacherName = "Сидоров В.К.",
+                    Description = "Программирование на Python и C++. Решение задач части 2."
                 }
             );
         }

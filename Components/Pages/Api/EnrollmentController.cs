@@ -1,6 +1,6 @@
+using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
 using ExamPrepWeb.Services;
-using System.Text.Json;
 
 namespace ExamPrepWeb.Components.Api
 {
@@ -18,46 +18,31 @@ namespace ExamPrepWeb.Components.Api
         }
 
         [HttpPost]
-        public async Task<ActionResult<EnrollmentResponse>> Enroll([FromBody] JsonElement request)
+        public async Task<ActionResult<EnrollmentResponse>> Enroll([FromBody] EnrollmentRequest request)
         {
             try
             {
-                // Логируем что пришло
-                _logger.LogInformation("Получен запрос: {Request}", request.GetRawText());
+                _logger.LogInformation("Получен API запрос на запись: {@Request}", request);
 
-                string fio = "";
-                string tel = "";
-                string email = "";
-                int courseId = 0;
-
-                // Пробуем получить данные разными способами
-                if (request.TryGetProperty("fio", out var fioProp))
-                    fio = fioProp.GetString() ?? "";
-                
-                if (request.TryGetProperty("tel", out var telProp))
-                    tel = telProp.GetString() ?? "";
-                
-                if (request.TryGetProperty("eml", out var emlProp))
-                    email = emlProp.GetString() ?? "";
-                else if (request.TryGetProperty("email", out var emailProp))
-                    email = emailProp.GetString() ?? "";
-                
-                if (request.TryGetProperty("courseId", out var idProp))
-                    courseId = idProp.GetInt32();
-
-                _logger.LogInformation("Распарсено: Fio={Fio}, Tel={Tel}, Email={Email}, CourseId={CourseId}", 
-                    fio, tel, email, courseId);
-
-                if (string.IsNullOrWhiteSpace(fio) || string.IsNullOrWhiteSpace(email))
+                if (!ModelState.IsValid)
                 {
+                    _logger.LogWarning("Неверные данные запроса");
                     return BadRequest(new EnrollmentResponse 
                     { 
                         Success = false, 
-                        Message = $"Пустые поля: Fio='{fio}', Email='{email}'" 
+                        Message = "Неверные данные" 
                     });
                 }
 
-                var result = await _courseService.EnrollStudentAsync(fio, tel, email, courseId);
+                var result = await _courseService.EnrollStudentAsync(
+                    request.Fio, 
+                    request.Tel, 
+                    request.Email, 
+                    request.CourseId
+                );
+
+                _logger.LogInformation("Результат записи: Success={Success}, Message={Message}", 
+                    result.Success, result.Message);
 
                 return Ok(new EnrollmentResponse 
                 { 
@@ -67,13 +52,30 @@ namespace ExamPrepWeb.Components.Api
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Ошибка при записи");
+                _logger.LogError(ex, "Ошибка при обработке запроса на запись");
                 return StatusCode(500, new EnrollmentResponse 
                 { 
                     Success = false, 
-                    Message = $"Ошибка сервера: {ex.Message}" 
+                    Message = "Внутренняя ошибка сервера" 
                 });
             }
+        }
+
+        public class EnrollmentRequest
+        {
+            [Required]
+            public string Fio { get; set; } = "";
+            
+            [Required]
+            public string Tel { get; set; } = "";
+            
+            [Required]
+            [EmailAddress]
+            public string Email { get; set; } = "";
+            
+            [Required]
+            [Range(1, int.MaxValue)]
+            public int CourseId { get; set; }
         }
 
         public class EnrollmentResponse

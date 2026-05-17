@@ -12,36 +12,40 @@
             <a href="/courses" class="btn btn-primary">← Назад к курсам</a>
         </div>
     }
+    else if (_showSuccess)
+    {
+        <div class="success-box">
+            <h2>✅ Успешно!</h2>
+            <p style="font-size: 1.2rem;">@_message</p>
+            <a href="/courses" class="btn btn-primary">К курсам</a>
+        </div>
+    }
     else
     {
         <div class="form-wrapper">
             <h2 style="text-align: center;">Запись на курс</h2>
             <p style="text-align: center; color: #6b7280; margin-bottom: 2rem;">@_course.Title</p>
 
-            <!-- Отладка: показывает, что введено в поля -->
-            <div id="debugBox" style="background: #f0f9ff; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; font-family: monospace; font-size: 0.85rem; border: 1px solid #bfdbfe;">
-                <strong>📊 Данные:</strong><br>
-                ФИО: <span id="debugFio">(пусто)</span><br>
-                Телефон: <span id="debugTel">(пусто)</span><br>
-                Email: <span id="debugEml">(пусто)</span>
-            </div>
+            @if (!string.IsNullOrEmpty(_errorMessage))
+            {
+                <div class="error-alert">⚠️ @_errorMessage</div>
+            }
 
             <div style="margin-bottom: 1.5rem;">
                 <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">ФИО *</label>
-                <input type="text" id="inputFio" oninput="updateDebug('fio', this.value)" class="form-control" placeholder="Иванов Иван Иванович" />
+                <input type="text" id="inputFio" class="form-control" placeholder="Иванов Иван Иванович" />
             </div>
 
             <div style="margin-bottom: 1.5rem;">
                 <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Телефон *</label>
-                <input type="tel" id="inputTel" oninput="updateDebug('tel', this.value)" class="form-control" placeholder="+7 (999) 000-00-00" />
+                <input type="tel" id="inputTel" class="form-control" placeholder="+7 (999) 000-00-00" />
             </div>
 
             <div style="margin-bottom: 1.5rem;">
                 <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Email *</label>
-                <input type="email" id="inputEml" oninput="updateDebug('eml', this.value)" class="form-control" placeholder="student@example.com" />
+                <input type="email" id="inputEml" class="form-control" placeholder="student@example.com" />
             </div>
 
-            <!-- Кнопка вызывает JavaScript функцию -->
             <button type="button" onclick="submitEnrollment()" class="btn btn-primary" style="width: 100%; padding: 1rem; font-size: 1.1rem; cursor: pointer;">
                 Подтвердить запись
             </button>
@@ -53,62 +57,57 @@
     }
 </div>
 
-<!-- JavaScript для отправки данных -->
 <script>
-    // Функция обновления синей панели отладки
-    function updateDebug(field, value) {
-        const el = document.getElementById('debug' + field.charAt(0).toUpperCase() + field.slice(1));
-        if (el) {
-            el.textContent = value || '(пусто)';
-        }
-    }
-
-    // Основная функция отправки
     async function submitEnrollment() {
-        // Получаем значения из полей ввода
         const fio = document.getElementById('inputFio').value.trim();
         const tel = document.getElementById('inputTel').value.trim();
         const eml = document.getElementById('inputEml').value.trim();
         
-        // Получаем ID курса из URL (например, из /enrollment/3 берем 3)
         const path = window.location.pathname;
-        const courseId = path.split('/').pop();
+        const courseId = parseInt(path.split('/').pop());
+        
+        console.log('[JS] Отправка:', { fio, tel, eml, courseId });
 
-        console.log('[JS] Попытка отправки:', { fio, tel, eml, courseId });
-
-        // Валидация
         if (!fio || !eml) {
             alert('⚠️ Заполните ФИО и Email!');
             return;
         }
 
         try {
-            // Отправляем запрос на API контроллер
             const response = await fetch('/api/enrollment', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 
+                    'Content-Type': 'application/json'
+                },
                 body: JSON.stringify({ 
                     fio: fio, 
                     tel: tel, 
-                    eml: eml, 
-                    courseId: parseInt(courseId) 
+                    email: eml,
+                    courseId: courseId 
                 })
             });
 
-            // Обрабатываем ответ
+            console.log('[JS] Status:', response.status);
+            
             const result = await response.json();
+            console.log('[JS] Результат:', result);
 
             if (result.success) {
-                // Если успех — перенаправляем на страницу курсов с флагом success=1
+                alert('✅ ' + result.message);
                 window.location.href = '/courses?success=1';
             } else {
-                // Если ошибка — показываем alert
-                alert('❌ ' + result.message);
+                let errorMsg = result.message || 'Ошибка при записи';
+                
+                if (result.errors) {
+                    const errorDetails = Object.values(result.errors).flat().join('\n');
+                    errorMsg += '\n\n' + errorDetails;
+                }
+                
+                alert('❌ ' + errorMsg);
             }
-
         } catch (error) {
             console.error('[JS] Ошибка:', error);
-            alert('❌ Ошибка соединения с сервером. Проверьте консоль.');
+            alert('❌ Ошибка: ' + error.message);
         }
     }
 </script>
@@ -116,8 +115,10 @@
 @code {
     [Parameter] public int CourseId { get; set; }
     private Course? _course;
+    private bool _showSuccess = false;
+    private string _message = "";
+    private string _errorMessage = "";
 
-    // Загрузка данных о курсе при открытии страницы
     protected override async Task OnInitializedAsync()
     {
         _course = await CourseService.GetCourseDetailsAsync(CourseId);

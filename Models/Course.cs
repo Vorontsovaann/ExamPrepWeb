@@ -9,12 +9,12 @@ namespace ExamPrepWeb.Models
         public int CourseId { get; set; }
 
         [Required(ErrorMessage = "Название курса обязательно")]
-        [StringLength(100, MinimumLength = 3)]
+        [StringLength(100, MinimumLength = 3, ErrorMessage = "Название от 3 до 100 символов")]
         [Display(Name = "Название курса")]
         public string Title { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Предмет обязателен")]
-        [StringLength(50)]
+        [StringLength(50, ErrorMessage = "Предмет не более 50 символов")]
         [Display(Name = "Предмет")]
         public string Subject { get; set; } = string.Empty;
 
@@ -25,15 +25,16 @@ namespace ExamPrepWeb.Models
         public decimal Price { get; set; }
 
         [Required(ErrorMessage = "Укажите дату начала")]
+        [Column(TypeName = "date")]
         [Display(Name = "Дата начала")]
-        public DateTime StartDate { get; set; } = DateTime.Now;
+        public DateTime StartDate { get; set; }
 
         [Required(ErrorMessage = "Укажите преподавателя")]
-        [StringLength(100)]
+        [StringLength(100, ErrorMessage = "ФИО преподавателя не более 100 символов")]
         [Display(Name = "Преподаватель")]
         public string TeacherName { get; set; } = string.Empty;
 
-        [StringLength(500)]
+        [StringLength(500, ErrorMessage = "Описание не более 500 символов")]
         [Display(Name = "Описание")]
         public string? Description { get; set; }
 

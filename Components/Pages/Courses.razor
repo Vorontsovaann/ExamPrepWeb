@@ -5,6 +5,7 @@
 <PageTitle>Курсы - ExamPrepCourses</PageTitle>
 
 <div class="container">
+    @* Показываем сообщение об успешной записи *@
     @if (ShowSuccessMessage)
     {
         <div class="success-box" style="max-width: 600px; margin: 2rem auto; text-align: center;">
@@ -27,7 +28,7 @@
     else
     {
         <div class="course-grid">
-            @foreach (var course in _courses.OrderBy(c => c.Title))
+            @foreach (var course in SortedCourses)
             {
                 <div class="course-card">
                     <h3>@course.Title</h3>
@@ -49,6 +50,9 @@
 @code {
     private List<Course>? _courses;
     private bool ShowSuccessMessage = false;
+
+    private IEnumerable<Course> SortedCourses => 
+        _courses?.OrderBy(c => c.Title) ?? Enumerable.Empty<Course>();
 
     protected override void OnInitialized()
     {

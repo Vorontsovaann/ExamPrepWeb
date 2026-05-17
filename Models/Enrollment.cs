@@ -11,15 +11,17 @@ namespace ExamPrepWeb.Models
         [Key]
         public int EnrollmentId { get; set; }
 
+        [Required]
         public int StudentId { get; set; }
 
+        [Required]
         public int CourseId { get; set; }
 
         [Column(TypeName = "datetime2")]
         [Display(Name = "Дата записи")]
         public DateTime EnrollmentDate { get; set; } = DateTime.UtcNow;
 
-        [JsonIgnore] // Защита от циклических ссылок в JSON
+        [JsonIgnore]
         [ForeignKey("StudentId")]
         public Student? Student { get; set; }
 
