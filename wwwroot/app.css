@@ -1,194 +1,245 @@
-/* Базовые настройки */
+/* ===== ТЁМНО-БОРДОВАЯ СХЕМА ===== */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap');
+
 :root {
-    --primary-color: #2D3436;
-    --accent-color: #00B894;
-    --accent-hover: #00A381;
-    --bg-color: #F9F9F9;
-    --card-bg: #FFFFFF;
-    --text-color: #2D3436;
-    --text-muted: #636E72;
-    --border-radius: 12px;
-    --shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
-    --shadow-hover: 0 8px 30px rgba(0, 0, 0, 0.12);
-    --font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --primary: #4a0e0e;        /* Тёмно-бордовый */
+  --primary-dark: #2d0808;   /* Очень тёмный */
+  --primary-light: #6b1515;  /* Чуть светлее */
+  --accent: #f97316;         /* Оранжевый для кнопок */
+  --bg: #fafafa;             /* Светлый фон */
+  --text: #1f2937;           /* Тёмный текст */
+  --text-muted: #6b7280;     /* Серый текст */
+  --border: #e5e7eb;
+  --radius: 16px;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* ГЛАВНАЯ СТРУКТУРА ДЛЯ "ЛИПКОГО" ФУТЕРА */
+html, body {
+  height: 100%;
 }
 
 body {
-    font-family: var(--font-family);
-    background-color: var(--bg-color);
-    color: var(--text-color);
-    margin: 0;
-    padding: 0;
-    line-height: 1.6;
+  font-family: 'Inter', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* Растягиваем на весь экран */
 }
 
-/* Навигация */
+.page-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  flex: 1;
+}
+
+.main-content {
+  flex: 1; /* Заставляет контент занимать всё свободное место, толкая футер вниз */
+}
+
+/* ===== НАВИГАЦИЯ ===== */
 .navbar {
-    background: var(--card-bg);
-    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-    padding: 1rem 0;
-    margin-bottom: 2rem;
-    position: sticky;
-    top: 0;
-    z-index: 1000;
+  background: white;
+  padding: 1.2rem 0;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.navbar-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  text-align: center;
 }
 
 .navbar-brand {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: var(--primary-color) !important;
-    letter-spacing: -0.5px;
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--primary) !important;
+  text-decoration: none;
+}
+
+.nav-links {
+  display: flex;
+  gap: 2rem;
+  justify-content: center;
 }
 
 .nav-link {
-    font-weight: 500;
-    color: var(--text-muted) !important;
-    transition: color 0.2s;
+  color: var(--text-muted) !important;
+  text-decoration: none;
+  font-weight: 600;
+  padding: 0.5rem 1.5rem;
+  border-radius: 8px;
+  transition: 0.3s;
 }
 
 .nav-link:hover, .nav-link.active {
-    color: var(--accent-color) !important;
+  color: var(--primary) !important;
+  background: rgba(74, 14, 14, 0.1);
 }
 
-/* Контейнер */
+/* ===== КОНТЕЙНЕР ===== */
 .container {
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 0 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
 }
 
-/* Заголовки */
-h1, h2, h3, h4, h5 {
-    font-weight: 700;
-    color: var(--primary-color);
-    margin-bottom: 1rem;
+/* ===== HERO СЕКЦИЯ ===== */
+.hero-section {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+  color: white;
+  padding: 5rem 2rem;
+  text-align: center;
+  margin-bottom: 3rem;
+  border-radius: 0 0 2rem 2rem;
 }
 
-.page-title {
-    font-size: 2.5rem;
-    text-align: center;
-    margin-bottom: 3rem;
+.hero-section h1 {
+  font-size: 3rem;
+  font-weight: 900;
+  margin-bottom: 1.5rem;
+  text-align: center;
 }
 
-/* Карточки */
-.card {
-    background: var(--card-bg);
-    border: none;
-    border-radius: var(--border-radius);
-    box-shadow: var(--shadow);
-    transition: all 0.3s ease;
-    overflow: hidden;
-    height: 100%;
+.hero-section p {
+  font-size: 1.2rem;
+  max-width: 600px;
+  margin: 0 auto 2rem;
+  text-align: center;
 }
 
-.card:hover {
-    transform: translateY(-5px);
-    box-shadow: var(--shadow-hover);
-}
-
-.card-body {
-    padding: 1.5rem;
-}
-
-/* Кнопки */
+/* ===== КНОПКИ ===== */
 .btn {
-    border-radius: 8px;
-    font-weight: 600;
-    padding: 0.6rem 1.5rem;
-    transition: all 0.2s;
-    border: none;
-    text-decoration: none;
-    display: inline-block;
-    cursor: pointer;
+  display: inline-block;
+  padding: 1rem 2.5rem;
+  font-size: 1.1rem;
+  font-weight: 700;
+  border-radius: 12px;
+  text-decoration: none;
+  transition: 0.3s;
+  cursor: pointer;
+  border: none;
+  text-align: center;
 }
 
 .btn-primary {
-    background-color: var(--accent-color);
-    color: white;
+  background: var(--accent);
+  color: white;
+  box-shadow: 0 4px 15px rgba(249, 115, 22, 0.4);
 }
 
 .btn-primary:hover {
-    background-color: var(--accent-hover);
-    transform: translateY(-2px);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(249, 115, 22, 0.5);
 }
 
-.btn-success {
-    background-color: var(--accent-color);
-    color: white;
+/* ===== СЕТКИ ===== */
+.features-grid, .course-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  margin: 2rem 0;
 }
 
-.btn-success:hover {
-    background-color: var(--accent-hover);
+/* ===== КАРТОЧКИ ===== */
+.card, .course-card {
+  background: white;
+  border-radius: var(--radius);
+  padding: 2rem;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* Чтобы кнопки были на одном уровне */
 }
 
-/* Сетка курсов */
-.course-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 2rem;
-    margin-bottom: 3rem;
+.card h5, .course-card h3 {
+  color: var(--primary);
+  margin-bottom: 1rem;
+  font-size: 1.3rem;
+  text-align: center;
 }
 
-.course-card-price {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: var(--accent-color);
-    margin: 10px 0;
+.course-price {
+  font-size: 2rem;
+  font-weight: 900;
+  color: var(--primary);
+  margin: 1rem 0;
+  text-align: center;
 }
 
-/* Формы */
+.course-meta {
+  margin: 1rem 0;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.page-title, .section-title {
+  font-size: 2.5rem;
+  color: var(--primary);
+  margin: 2rem 0;
+  font-weight: 900;
+  text-align: center;
+}
+
+/* ===== ФОРМА ===== */
+.form-container {
+  max-width: 550px;
+  margin: 2rem auto;
+  background: white;
+  padding: 3rem;
+  border-radius: 20px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+}
+
 .form-control {
-    border-radius: 8px;
-    padding: 0.8rem;
-    border: 1px solid #E2E8F0;
-    background-color: #FDFDFD;
-    transition: border-color 0.2s;
-    width: 100%;
-    margin-bottom: 1rem;
-    font-size: 1rem;
+  width: 100%;
+  padding: 0.9rem;
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  font-size: 1rem;
+  transition: 0.3s;
 }
 
 .form-control:focus {
-    outline: none;
-    border-color: var(--accent-color);
-    box-shadow: 0 0 0 3px rgba(0, 184, 148, 0.1);
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px rgba(74, 14, 14, 0.1);
 }
 
-.form-label {
-    font-weight: 600;
-    color: var(--text-muted);
-    margin-bottom: 0.5rem;
-    display: block;
+/* ===== ФУТЕР (Всегда внизу) ===== */
+.footer {
+  background: #1f2937;
+  color: white;
+  padding: 1.5rem 0;
+  margin-top: auto; /* Ключевое свойство для прижатия */
+  text-align: center;
+  border-top: 4px solid var(--primary); /* Красивая бордовая полоска сверху */
 }
 
-/* Алерты */
-.alert {
-    border-radius: var(--border-radius);
-    border: none;
-    padding: 1rem 1.5rem;
-    margin-bottom: 1.5rem;
-}
-
-.alert-success {
-    background-color: #E6FFFA;
-    color: #047857;
-}
-
-.alert-danger {
-    background-color: #FFF5F5;
-    color: #C53030;
-}
-
-/* Футер */
-footer {
-    margin-top: 4rem;
-    padding: 2rem 0;
-    text-align: center;
-    color: var(--text-muted);
-    border-top: 1px solid #E2E8F0;
-}
-
-/* Анимация загрузки */
-.spinner-border {
-    color: var(--accent-color);
+/* ===== АДАПТИВНОСТЬ ===== */
+@media (max-width: 900px) {
+  .features-grid, .course-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .hero-section h1 {
+    font-size: 2rem;
+  }
 }

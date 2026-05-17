@@ -1,146 +1,100 @@
 @page "/enrollment/{CourseId:int}"
-@using ExamPrepWeb.Models
-@using ExamPrepWeb.Services
-@using System.ComponentModel.DataAnnotations
 @inject ICourseService CourseService
-@inject NavigationManager Navigation
 
 <PageTitle>Запись на курс</PageTitle>
 
-<div class="container" style="max-width: 600px; padding-bottom: 4rem;">
-    <h2 class="page-title" style="font-size: 2rem; margin-bottom: 2rem;">Запись на курс</h2>
-
+<div class="container">
     @if (_course == null)
     {
-        <div class="alert alert-danger">❌ Курс не найден. <a href="/courses">Вернуться к списку</a></div>
+        <p style="text-align: center; padding: 2rem;">Курс не найден.</p>
+    }
+    else if (_success)
+    {
+        <div style="padding: 3rem; text-align: center; background: #d1fae5; border-radius: 16px; border: 3px solid #10b981;">
+            <div style="font-size: 5rem; margin-bottom: 1rem;">✅</div>
+            <h2 style="color: #065f46; margin-bottom: 1rem;">Заявка принята!</h2>
+            <p style="color: #047857; font-size: 1.2rem;">@_message</p>
+            <a href="/courses" class="btn btn-primary" style="display: inline-block; margin-top: 1.5rem;">Вернуться к курсам</a>
+        </div>
     }
     else
     {
-        <!-- Карточка с информацией о курсе -->
-        <div class="card mb-4" style="background-color: #F0FDF4; border: 1px solid #D1FAE5;">
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-start">
-                    <div>
-                        <h4 style="margin-bottom: 0.5rem; color: #065F46;">@_course.Title</h4>
-                        <p class="text-muted mb-1">@_course.Subject</p>
-                    </div>
-                    <div style="font-weight: 700; font-size: 1.2rem; color: var(--accent-color);">
-                        @_course.Price.ToString("N0") ₽
-                    </div>
-                </div>
-                <hr style="margin: 10px 0; opacity: 0.5;">
-                <div class="d-flex gap-4 text-sm" style="font-size: 0.95rem;">
-                    <span>📅 Начало: <strong>@_course.StartDate.ToString("dd.MM.yyyy")</strong></span>
-                    <span>👨‍🏫 <strong>@_course.TeacherName</strong></span>
-                </div>
+        <div class="form-container" style="max-width: 550px; margin: 2rem auto; background: white; padding: 3rem; border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.1);">
+            <h2 style="text-align: center; margin-bottom: 0.5rem; color: var(--primary);">Запись на курс</h2>
+            <p style="text-align: center; color: var(--text-muted); margin-bottom: 2rem;">@_course.Title</p>
+
+            <div id="debugBox" style="background: #f0f9ff; padding: 1rem; border-radius: 8px; margin-bottom: 2rem; font-family: monospace; font-size: 0.9rem; border: 2px solid #3b82f6;">
+                <strong>📊 Данные:</strong><br>
+                ФИО: <span id="debugFio">(пусто)</span><br>
+                Телефон: <span id="debugTel">(пусто)</span><br>
+                Email: <span id="debugEml">(пусто)</span>
             </div>
-        </div>
 
-        <!-- Форма -->
-        <div class="card">
-            <div class="card-body">
-                <EditForm Model="@_enrollmentForm" OnValidSubmit="HandleValidSubmit">
-                    <DataAnnotationsValidator />
-                    <ValidationSummary class="alert alert-danger" />
+            <form id="enrollForm" onsubmit="return false;">
+                <div style="margin-bottom: 1.5rem; text-align: left;">
+                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 700;">ФИО *</label>
+                    <input type="text" id="inputFio" oninput="updateDebug('fio', this.value)" class="form-control" placeholder="Иванов Иван Иванович" style="width: 100%; padding: 0.9rem; border: 2px solid var(--border); border-radius: 10px; font-size: 1rem;" />
+                </div>
 
-                    <div class="mb-3">
-                        <label class="form-label">Ваше полное имя (ФИО) *</label>
-                        <InputText @bind-Value="_enrollmentForm.FullName" 
-                                   class="form-control" 
-                                   placeholder="Иванов Иван Иванович" />
-                        <ValidationMessage For="@(() => _enrollmentForm.FullName)" class="text-danger" />
-                    </div>
+                <div style="margin-bottom: 1.5rem; text-align: left;">
+                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 700;">Телефон *</label>
+                    <input type="tel" id="inputTel" oninput="updateDebug('tel', this.value)" class="form-control" placeholder="+7 (999) 000-00-00" style="width: 100%; padding: 0.9rem; border: 2px solid var(--border); border-radius: 10px; font-size: 1rem;" />
+                </div>
 
-                    <div class="mb-3">
-                        <label class="form-label">Номер телефона *</label>
-                        <InputText @bind-Value="_enrollmentForm.Phone" 
-                                   class="form-control" 
-                                   placeholder="+7 (999) 000-00-00" />
-                        <ValidationMessage For="@(() => _enrollmentForm.Phone)" class="text-danger" />
-                    </div>
+                <div style="margin-bottom: 2rem; text-align: left;">
+                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 700;">Email *</label>
+                    <input type="email" id="inputEml" oninput="updateDebug('eml', this.value)" class="form-control" placeholder="student@example.com" style="width: 100%; padding: 0.9rem; border: 2px solid var(--border); border-radius: 10px; font-size: 1rem;" />
+                </div>
 
-                    <div class="mb-3">
-                        <label class="form-label">Email для связи *</label>
-                        <InputText @bind-Value="_enrollmentForm.Email" 
-                                   class="form-control" 
-                                   placeholder="example@mail.ru" />
-                        <ValidationMessage For="@(() => _enrollmentForm.Email)" class="text-danger" />
-                    </div>
+                <button type="button" onclick="submitForm()" class="btn btn-primary" style="width: 100%; padding: 1.1rem; font-size: 1.15rem;">
+                    Подтвердить запись
+                </button>
+            </form>
 
-                    <div class="d-grid gap-2 mt-4">
-                        <button type="submit" class="btn btn-success btn-lg" disabled="@_isSubmitting">
-                            @(_isSubmitting ? "Отправка данных..." : "Записаться на курс")
-                        </button>
-                        <a href="/courses" class="btn btn-link text-muted text-center mt-2">
-                            ← Вернуться к списку курсов
-                        </a>
-                    </div>
-                </EditForm>
-
-                @if (!string.IsNullOrEmpty(_message))
-                {
-                    <div class="alert @(_isSuccess ? "alert-success" : "alert-danger") mt-4">
-                        @_message
-                    </div>
-                }
+            <div style="text-align: center; margin-top: 2rem;">
+                <a href="/courses" style="color: var(--text-muted); text-decoration: none;">← Назад к курсам</a>
             </div>
         </div>
     }
 </div>
 
+<script>
+    function updateDebug(field, value) {
+        const debugEl = document.getElementById('debug' + field.charAt(0).toUpperCase() + field.slice(1));
+        if (debugEl) {
+            debugEl.textContent = value || '(пусто)';
+        }
+    }
+
+    function submitForm() {
+        const fio = document.getElementById('inputFio').value.trim();
+        const tel = document.getElementById('inputTel').value.trim();
+        const eml = document.getElementById('inputEml').value.trim();
+
+        if (!fio || !tel || !eml) {
+            alert('⚠️ Заполните все обязательные поля!');
+            return;
+        }
+
+        alert('✅ Спасибо, ' + fio + '! Ваша заявка принята.\n\nМы свяжемся с вами по номеру ' + tel);
+        
+        document.getElementById('inputFio').value = '';
+        document.getElementById('inputTel').value = '';
+        document.getElementById('inputEml').value = '';
+        updateDebug('fio', '');
+        updateDebug('tel', '');
+        updateDebug('eml', '');
+    }
+</script>
+
 @code {
     [Parameter] public int CourseId { get; set; }
-    
     private Course? _course;
+    private bool _success = false;
     private string _message = "";
-    private bool _isSuccess = false;
-    private bool _isSubmitting = false;
-    private EnrollmentForm _enrollmentForm = new();
-    
-    public class EnrollmentForm
-    {
-        [Required(ErrorMessage = "Введите ФИО")]
-        [StringLength(100, MinimumLength = 5, ErrorMessage = "ФИО слишком короткое")]
-        public string FullName { get; set; } = string.Empty;
-        
-        [Required(ErrorMessage = "Введите телефон")]
-        [Phone(ErrorMessage = "Неверный формат телефона")]
-        public string Phone { get; set; } = string.Empty;
-        
-        [Required(ErrorMessage = "Введите email")]
-        [EmailAddress(ErrorMessage = "Неверный формат email")]
-        public string Email { get; set; } = string.Empty;
-    }
-    
+
     protected override async Task OnInitializedAsync()
     {
         _course = await CourseService.GetCourseDetailsAsync(CourseId);
-    }
-    
-    private async Task HandleValidSubmit()
-    {
-        _isSubmitting = true;
-        StateHasChanged();
-        
-        try
-        {
-            // Имитация успешной записи для UI
-            // В реальности здесь вызов сервиса
-            await Task.Delay(1000); 
-            
-            _isSuccess = true;
-            _message = $"✅ Спасибо, {_enrollmentForm.FullName}! Ваша заявка на курс \"{_course?.Title}\" принята. Мы свяжемся с вами по номеру {_enrollmentForm.Phone}.";
-            _enrollmentForm = new EnrollmentForm();
-        }
-        catch (Exception ex)
-        {
-            _isSuccess = false;
-            _message = $"❌ Ошибка: {ex.Message}";
-        }
-        finally
-        {
-            _isSubmitting = false;
-            StateHasChanged();
-        }
     }
 }

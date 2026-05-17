@@ -1,25 +1,15 @@
 ﻿@inherits LayoutComponentBase
 
-<div class="page">
-    <div class="sidebar">
-        <!-- Если нужно боковое меню, можно оставить NavMenu здесь -->
-    </div>
-
-    <div class="main">
-        <header class="top-row px-4">
-            <!-- Верхняя навигация -->
-            <NavMenu />
-        </header>
-
-        <article class="content px-4">
-            <!-- Сюда рендерится страница (Index, Courses и т.д.) -->
-            @Body
-        </article>
-        
-        <footer class="footer text-center">
-            <div class="container">
-                <p>&copy; 2026 ExamPrepCourses. Все права защищены.</p>
-            </div>
-        </footer>
-    </div>
+<div class="page-wrapper">
+    <NavMenu />
+    
+    <main class="main-content">
+        @Body
+    </main>
+    
+    <footer class="footer">
+        <div class="container">
+            <p>© 2026 ExamPrepCourses. Все права защищены.</p>
+        </div>
+    </footer>
 </div>

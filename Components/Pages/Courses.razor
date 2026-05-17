@@ -1,48 +1,34 @@
 @page "/courses"
-@using ExamPrepWeb.Models
-@using ExamPrepWeb.Services
 @inject ICourseService CourseService
-@inject NavigationManager Navigation
 
-<PageTitle>Курсы</PageTitle>
+<PageTitle>Курсы - ExamPrepCourses</PageTitle>
 
 <div class="container">
     <h2 class="page-title">Доступные курсы</h2>
 
     @if (_courses == null)
     {
-        <div class="text-center py-5">
-            <div class="spinner-border" role="status">
-                <span class="visually-hidden">Загрузка...</span>
-            </div>
-            <p class="mt-2 text-muted">Загрузка курсов...</p>
-        </div>
-    }
-    else if (_courses.Count == 0)
-    {
-        <div class="alert alert-warning text-center">Курсов пока нет.</div>
+        <p style="text-align: center; padding: 3rem;">Загрузка курсов...</p>
     }
     else
     {
         <div class="course-grid">
             @foreach (var course in _courses.OrderBy(c => c.Title))
             {
-                <div class="card d-flex flex-column">
-                    <div class="card-body d-flex flex-column">
-                        <h4 style="margin-bottom: 0.5rem;">@course.Title</h4>
-                        <p class="text-muted" style="margin-bottom: 0.2rem;">@course.Subject</p>
-                        
-                        <div class="mt-auto">
-                            <div class="course-card-price">@course.Price.ToString("N0") ₽</div>
-                            <div class="d-flex justify-content-between align-items-center text-muted mb-3" style="font-size: 0.9rem;">
-                                <span>📅 @course.StartDate.ToString("dd.MM.yyyy")</span>
-                                <span>👨‍🏫 @course.TeacherName</span>
-                            </div>
-                            <button class="btn btn-success w-100" @onclick="() => GoToEnrollment(course.CourseId)">
-                                Записаться
-                            </button>
-                        </div>
+                <div class="course-card">
+                    <h3>@course.Title</h3>
+                    <p style="color: var(--text-muted); margin-bottom: 1rem;">@course.Subject</p>
+                    
+                    <div class="course-price">@course.Price.ToString("N0") ₽</div>
+                    
+                    <div class="course-meta">
+                        <div>📅 Начало: @course.StartDate.ToString("dd.MM.yyyy")</div>
+                        <div>👨‍ Преподаватель: @course.TeacherName</div>
                     </div>
+                    
+                    <a href="/enrollment/@course.CourseId" class="btn btn-primary" style="display: block; margin-top: 1rem;">
+                        Записаться на курс →
+                    </a>
                 </div>
             }
         </div>
@@ -55,10 +41,5 @@
     protected override async Task OnInitializedAsync()
     {
         _courses = await CourseService.GetAvailableCoursesAsync();
-    }
-
-    private void GoToEnrollment(int courseId)
-    {
-        Navigation.NavigateTo($"/enrollment/{courseId}");
     }
 }
