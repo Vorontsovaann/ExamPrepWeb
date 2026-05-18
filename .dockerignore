@@ -1,36 +1,18 @@
-# Файлы сборки
-bin/
-obj/
+[Bb]in/
+[Oo]bj/
 publish/
-
-# Файлы IDE
+*.pdb
 .vs/
 .vscode/
 *.suo
 *.user
-*.userosscache
-*.sln.docstates
-
-# База данных
 *.db
 *.db-shm
 *.db-wal
 Data/app.db
-
-# Логи
 logs/
 *.log
-
-# Docker
-Dockerfile*
-docker-compose*
-.dockerignore
-
-# Git
+[Nn]u[Pp]g/
+packages/
 .git/
 .gitignore
-
-# Документы
-*.md
-README*
-LICENSE

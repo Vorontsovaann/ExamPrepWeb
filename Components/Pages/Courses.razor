@@ -5,42 +5,29 @@
 <PageTitle>Курсы - ExamPrepCourses</PageTitle>
 
 <div class="container">
-    @* Показываем сообщение об успешной записи *@
     @if (ShowSuccessMessage)
     {
         <div class="success-box" style="max-width: 600px; margin: 2rem auto; text-align: center;">
             <h2>✅ Успешно!</h2>
-            <p style="font-size: 1.2rem; color: #065f46;">Вы успешно записаны на курс!</p>
-            <p style="color: #047857;">Мы свяжемся с вами в ближайшее время.</p>
+            <p>Вы успешно записаны на курс!</p>
         </div>
     }
 
     <h2 class="page-title">Доступные курсы</h2>
 
-    @if (_courses == null)
-    {
-        <p style="text-align: center; padding: 3rem;">Загрузка курсов...</p>
-    }
-    else if (_courses.Count == 0)
-    {
-        <p style="text-align: center; padding: 3rem;">Курсов пока нет</p>
-    }
+    @if (_courses == null) { <p style="text-align:center; padding:2rem;">Загрузка...</p> }
+    else if (_courses.Count == 0) { <p style="text-align:center;">Курсов пока нет</p> }
     else
     {
         <div class="course-grid">
-            @foreach (var course in SortedCourses)
+            @foreach (var c in _courses.OrderBy(x => x.Title))
             {
                 <div class="course-card">
-                    <h3>@course.Title</h3>
-                    <p style="color: var(--text-muted); margin-bottom: 1rem;">@course.Subject</p>
-                    <div class="course-price">@course.Price.ToString("N0") ₽</div>
-                    <div class="course-meta">
-                        <div>📅 Начало: @course.StartDate.ToString("dd.MM.yyyy")</div>
-                        <div>👨‍ Преподаватель: @course.TeacherName</div>
-                    </div>
-                    <a href="/enrollment/@course.CourseId" class="btn btn-primary" style="display: block; margin-top: 1rem;">
-                        Записаться на курс →
-                    </a>
+                    <h3>@c.Title</h3>
+                    <p style="color:#6b7280;">@c.Subject</p>
+                    <div class="course-price">@c.Price.ToString("N0") ₽</div>
+                    <div class="course-meta">📅 @c.StartDate.ToString("dd.MM.yyyy") | 👨‍ @c.TeacherName</div>
+                    <a href="/enrollment/@c.CourseId" class="btn btn-primary" style="display:block; margin-top:1rem;">Записаться →</a>
                 </div>
             }
         </div>
@@ -49,21 +36,6 @@
 
 @code {
     private List<Course>? _courses;
-    private bool ShowSuccessMessage = false;
-
-    private IEnumerable<Course> SortedCourses => 
-        _courses?.OrderBy(c => c.Title) ?? Enumerable.Empty<Course>();
-
-    protected override void OnInitialized()
-    {
-        // Проверяем параметр URL ?success=1
-        var uri = new Uri(Navigation.Uri);
-        var queryParams = System.Web.HttpUtility.ParseQueryString(uri.Query);
-        ShowSuccessMessage = queryParams["success"] == "1";
-    }
-
-    protected override async Task OnInitializedAsync()
-    {
-        _courses = await CourseService.GetAvailableCoursesAsync();
-    }
+    private bool ShowSuccessMessage => Navigation.Uri.Contains("success=1");
+    protected override async Task OnInitializedAsync() => _courses = await CourseService.GetAvailableCoursesAsync();
 }

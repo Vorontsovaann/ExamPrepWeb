@@ -9,14 +9,14 @@
     {
         <div style="text-align: center; padding: 3rem;">
             <h3>Курс не найден</h3>
-            <a href="/courses" class="btn btn-primary">← Назад к курсам</a>
+            <a href="/courses" class="btn btn-primary">← Назад</a>
         </div>
     }
     else if (_showSuccess)
     {
         <div class="success-box">
             <h2>✅ Успешно!</h2>
-            <p style="font-size: 1.2rem;">@_message</p>
+            <p>@_message</p>
             <a href="/courses" class="btn btn-primary">К курсам</a>
         </div>
     }
@@ -35,12 +35,10 @@
                 <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">ФИО *</label>
                 <input type="text" id="inputFio" class="form-control" placeholder="Иванов Иван Иванович" />
             </div>
-
             <div style="margin-bottom: 1.5rem;">
                 <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Телефон *</label>
                 <input type="tel" id="inputTel" class="form-control" placeholder="+7 (999) 000-00-00" />
             </div>
-
             <div style="margin-bottom: 1.5rem;">
                 <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Email *</label>
                 <input type="email" id="inputEml" class="form-control" placeholder="student@example.com" />
@@ -49,10 +47,6 @@
             <button type="button" onclick="submitEnrollment()" class="btn btn-primary" style="width: 100%; padding: 1rem; font-size: 1.1rem; cursor: pointer;">
                 Подтвердить запись
             </button>
-
-            <div style="text-align: center; margin-top: 1.5rem;">
-                <a href="/courses">← Назад к курсам</a>
-            </div>
         </div>
     }
 </div>
@@ -62,52 +56,25 @@
         const fio = document.getElementById('inputFio').value.trim();
         const tel = document.getElementById('inputTel').value.trim();
         const eml = document.getElementById('inputEml').value.trim();
-        
-        const path = window.location.pathname;
-        const courseId = parseInt(path.split('/').pop());
-        
-        console.log('[JS] Отправка:', { fio, tel, eml, courseId });
+        const courseId = parseInt(window.location.pathname.split('/').pop());
 
-        if (!fio || !eml) {
-            alert('⚠️ Заполните ФИО и Email!');
-            return;
-        }
+        if (!fio || !eml) { alert('⚠️ Заполните ФИО и Email!'); return; }
 
         try {
             const response = await fetch('/api/enrollment', {
                 method: 'POST',
-                headers: { 
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ 
-                    fio: fio, 
-                    tel: tel, 
-                    email: eml,
-                    courseId: courseId 
-                })
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ fio, tel, email: eml, courseId })
             });
-
-            console.log('[JS] Status:', response.status);
-            
             const result = await response.json();
-            console.log('[JS] Результат:', result);
-
             if (result.success) {
                 alert('✅ ' + result.message);
                 window.location.href = '/courses?success=1';
             } else {
-                let errorMsg = result.message || 'Ошибка при записи';
-                
-                if (result.errors) {
-                    const errorDetails = Object.values(result.errors).flat().join('\n');
-                    errorMsg += '\n\n' + errorDetails;
-                }
-                
-                alert('❌ ' + errorMsg);
+                alert('❌ ' + result.message);
             }
         } catch (error) {
-            console.error('[JS] Ошибка:', error);
-            alert('❌ Ошибка: ' + error.message);
+            alert('❌ Ошибка соединения: ' + error.message);
         }
     }
 </script>
@@ -119,8 +86,5 @@
     private string _message = "";
     private string _errorMessage = "";
 
-    protected override async Task OnInitializedAsync()
-    {
-        _course = await CourseService.GetCourseDetailsAsync(CourseId);
-    }
+    protected override async Task OnInitializedAsync() => _course = await CourseService.GetCourseDetailsAsync(CourseId);
 }

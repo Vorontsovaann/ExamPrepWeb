@@ -1,5 +1,4 @@
 version: '3.8'
-
 services:
   exam-prep-app:
     build:
@@ -15,7 +14,7 @@ services:
       - ConnectionStrings__DefaultConnection=Data Source=/app/Data/app.db
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/courses"]
+      test: ["CMD-SHELL", "wget --spider -q http://localhost:8080/courses || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 3

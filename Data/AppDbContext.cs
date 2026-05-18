@@ -3,6 +3,7 @@ using ExamPrepWeb.Models;
 
 namespace ExamPrepWeb.Data
 {
+    /// <summary>Контекст базы данных приложения.</summary>
     public class AppDbContext : DbContext
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
@@ -15,14 +16,12 @@ namespace ExamPrepWeb.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            // Каскадное удаление: Если удалили Студента -> удаляем его записи
             modelBuilder.Entity<Enrollment>()
                 .HasOne(e => e.Student)
                 .WithMany(s => s.Enrollments)
                 .HasForeignKey(e => e.StudentId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // Ограничительное удаление: Нельзя удалить Курс, если есть студенты
             modelBuilder.Entity<Enrollment>()
                 .HasOne(e => e.Course)
                 .WithMany(c => c.Enrollments)
@@ -34,7 +33,6 @@ namespace ExamPrepWeb.Data
 
         private void SeedData(ModelBuilder modelBuilder)
         {
-            // Динамические даты: курсы всегда начинаются в будущем
             var baseDate = DateTime.Now.AddMonths(3);
 
             modelBuilder.Entity<Course>().HasData(
@@ -43,30 +41,30 @@ namespace ExamPrepWeb.Data
                     CourseId = 1,
                     Title = "Математика ЕГЭ",
                     Subject = "Математика",
-                    Price = 5000m, // <-- decimal literal (буква m!)
+                    Price = 5000m,
                     StartDate = baseDate,
                     TeacherName = "Иванов И.И.",
-                    Description = "Профильный уровень. Подготовка к ЕГЭ по математике."
+                    Description = "Профильный уровень."
                 },
                 new Course
                 {
                     CourseId = 2,
                     Title = "Английский язык ЕГЭ",
                     Subject = "Английский",
-                    Price = 7500m, // <-- decimal literal
+                    Price = 7500m,
                     StartDate = baseDate.AddDays(14),
                     TeacherName = "Петрова А.С.",
-                    Description = "Интенсивный курс английского языка для сдачи ЕГЭ."
+                    Description = "Интенсивный курс."
                 },
                 new Course
                 {
                     CourseId = 3,
                     Title = "Информатика ЕГЭ",
                     Subject = "Информатика",
-                    Price = 6000m, // <-- decimal literal
+                    Price = 6000m,
                     StartDate = baseDate.AddMonths(1),
                     TeacherName = "Сидоров В.К.",
-                    Description = "Программирование на Python и C++. Решение задач части 2."
+                    Description = "Python & C++."
                 }
             );
         }

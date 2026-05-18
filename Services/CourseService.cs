@@ -20,12 +20,12 @@ namespace ExamPrepWeb.Services
 
     public class CourseService : ICourseService
     {
-        private readonly AppDbContext _context;
+        private readonly AppDbContext _context;  // ← ВНЕДРЯЕТСЯ ЧЕРЕЗ DI
         private readonly ILogger<CourseService> _logger;
 
         public CourseService(AppDbContext context, ILogger<CourseService> logger)
         {
-            _context = context;
+            _context = context;  // ← ИСПОЛЬЗУЕМ ВНЕДРЕННЫЙ КОНТЕКСТ
             _logger = logger;
         }
 
@@ -43,7 +43,7 @@ namespace ExamPrepWeb.Services
 
         public async Task<EnrollmentResult> EnrollStudentAsync(string fullName, string phone, string email, int courseId)
         {
-            _logger.LogInformation("Попытка записи: {FullName}, {Email}, курс {CourseId}", 
+            _logger.LogInformation("Попытка записи: {FullName}, {Email}, курс {CourseId}",
                 fullName, email, courseId);
 
             // 1. Валидация входных данных
@@ -69,7 +69,7 @@ namespace ExamPrepWeb.Services
 
             try
             {
-                // 2. Поиск или создание студента
+                // 2. Поиск или создание студента (ИСПОЛЬЗУЕМ _context, а не new AppDbContext!)
                 var student = await _context.Students
                     .FirstOrDefaultAsync(s => s.Email == normalizedEmail);
 
@@ -85,13 +85,13 @@ namespace ExamPrepWeb.Services
                     };
                     _context.Students.Add(student);
                     
-                    // ВАЖНО: Сохраняем студента СНАЧАЛА чтобы получить StudentId
+                    // Сохраняем студента СНАЧАЛА чтобы получить StudentId
                     await _context.SaveChangesAsync();
                     _logger.LogInformation("Студент сохранен с ID: {StudentId}", student.StudentId);
                 }
                 else
                 {
-                    _logger.LogInformation("Найден существующий студент: {Email}, ID: {StudentId}", 
+                    _logger.LogInformation("Найден существующий студент: {Email}, ID: {StudentId}",
                         normalizedEmail, student.StudentId);
                 }
 
@@ -101,7 +101,7 @@ namespace ExamPrepWeb.Services
 
                 if (alreadyEnrolled)
                 {
-                    _logger.LogWarning("Студент {Email} уже записан на курс {CourseId}", 
+                    _logger.LogWarning("Студент {Email} уже записан на курс {CourseId}",
                         normalizedEmail, courseId);
                     return new EnrollmentResult { Success = false, Message = "Вы уже записаны на этот курс" };
                 }
@@ -117,7 +117,7 @@ namespace ExamPrepWeb.Services
                 // 5. Создание записи
                 var enrollment = new Enrollment
                 {
-                    StudentId = student.StudentId,  // Теперь ID точно есть!
+                    StudentId = student.StudentId,
                     CourseId = courseId,
                     EnrollmentDate = DateTime.UtcNow
                 };
@@ -128,13 +128,13 @@ namespace ExamPrepWeb.Services
                 await _context.SaveChangesAsync();
                 _logger.LogInformation("Запись создана: EnrollmentId={EnrollmentId}", enrollment.EnrollmentId);
 
-                _logger.LogInformation("Студент {Email} успешно записан на курс {CourseId}", 
+                _logger.LogInformation("Студент {Email} успешно записан на курс {CourseId}",
                     normalizedEmail, courseId);
 
-                return new EnrollmentResult 
-                { 
-                    Success = true, 
-                    Message = $"Спасибо, {firstName}! Ваша заявка на курс принята." 
+                return new EnrollmentResult
+                {
+                    Success = true,
+                    Message = $"Спасибо, {firstName}! Ваша заявка на курс принята."
                 };
             }
             catch (DbUpdateException ex)
