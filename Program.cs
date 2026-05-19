@@ -1,10 +1,10 @@
 using ExamPrepWeb.Data;
-using ExamPrepWeb.Data.Repositories;
+using ExamPrepWeb.Data.Repositories;  // ← ДОБАВЛЕНО!
 using ExamPrepWeb.Services;
 using Microsoft.EntityFrameworkCore;
 using ExamPrepWeb.Components;
-using FluentValidation;              // ← ДОБАВЛЕНО!
-using FluentValidation.AspNetCore;   // ← ДОБАВЛЕНО!
+using FluentValidation;               // ← ДОБАВЛЕНО!
+using FluentValidation.AspNetCore;    // ← ДОБАВЛЕНО!
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,7 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// 2. Регистрация РЕПОЗИТОРИЯ
+// 2. Регистрация РЕПОЗИТОРИЯ (ДОБАВЛЕНО!)
 builder.Services.AddScoped<ICourseRepository, CourseRepository>();
 
 // 3. Регистрация сервисов (DI)
@@ -21,7 +21,7 @@ builder.Services.AddScoped<ICourseService, CourseService>();
 // 4. Поддержка API контроллеров
 builder.Services.AddControllers();
 
-// 5. РЕГИСТРАЦИЯ FLUENTVALIDATION
+// 5. РЕГИСТРАЦИЯ FLUENTVALIDATION (ДОБАВЛЕНО!)
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 

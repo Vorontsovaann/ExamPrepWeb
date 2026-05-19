@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
 
-namespace ExamPrepWeb.Migrations
+namespace ExamPrepWeb.Data.Migrations
 {
     /// <inheritdoc />
     public partial class InitialCreate : Migration
@@ -37,9 +37,9 @@ namespace ExamPrepWeb.Migrations
                 {
                     StudentId = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    FirstName = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
-                    LastName = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
-                    Email = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
+                    FirstName = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
+                    LastName = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
+                    Email = table.Column<string>(type: "TEXT", maxLength: 150, nullable: false),
                     DateOfBirth = table.Column<DateTime>(type: "date", nullable: false)
                 },
                 constraints: table =>
@@ -55,7 +55,7 @@ namespace ExamPrepWeb.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     StudentId = table.Column<int>(type: "INTEGER", nullable: false),
                     CourseId = table.Column<int>(type: "INTEGER", nullable: false),
-                    EnrollmentDate = table.Column<DateTime>(type: "datetime", nullable: false)
+                    EnrollmentDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -79,16 +79,15 @@ namespace ExamPrepWeb.Migrations
                 columns: new[] { "CourseId", "Description", "Price", "StartDate", "Subject", "TeacherName", "Title" },
                 values: new object[,]
                 {
-                    { 1, "Подготовка к ЕГЭ по математике", 5000m, new DateTime(2026, 9, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Математика", "Иванов И.И.", "Математика ЕГЭ" },
-                    { 2, "Подготовка к ЕГЭ по английскому языку", 7500m, new DateTime(2026, 9, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), "Английский", "Петрова А.С.", "Английский язык ЕГЭ" },
-                    { 3, "Подготовка к ЕГЭ по информатике", 6000m, new DateTime(2026, 10, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Информатика", "Сидоров В.К.", "Информатика ЕГЭ" }
+                    { 1, "Профильный уровень.", 5000m, new DateTime(2026, 8, 19, 7, 24, 20, 125, DateTimeKind.Local).AddTicks(7336), "Математика", "Иванов И.И.", "Математика ЕГЭ" },
+                    { 2, "Интенсивный курс.", 7500m, new DateTime(2026, 9, 2, 7, 24, 20, 125, DateTimeKind.Local).AddTicks(7336), "Английский", "Петрова А.С.", "Английский язык ЕГЭ" },
+                    { 3, "Python & C++.", 6000m, new DateTime(2026, 9, 19, 7, 24, 20, 125, DateTimeKind.Local).AddTicks(7336), "Информатика", "Сидоров В.К.", "Информатика ЕГЭ" }
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Courses_Title",
+                name: "IX_Course_Title",
                 table: "Courses",
-                column: "Title",
-                unique: true);
+                column: "Title");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Enrollments_CourseId",
@@ -96,9 +95,16 @@ namespace ExamPrepWeb.Migrations
                 column: "CourseId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Enrollments_StudentId",
+                name: "IX_UniqueEnrollment",
                 table: "Enrollments",
-                column: "StudentId");
+                columns: new[] { "StudentId", "CourseId" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UniqueEmail",
+                table: "Students",
+                column: "Email",
+                unique: true);
         }
 
         /// <inheritdoc />

@@ -3,19 +3,16 @@ using System;
 using ExamPrepWeb.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace ExamPrepWeb.Migrations
+namespace ExamPrepWeb.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260516174158_InitialCreate")]
-    partial class InitialCreate
+    partial class AppDbContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.27");
@@ -53,8 +50,7 @@ namespace ExamPrepWeb.Migrations
 
                     b.HasKey("CourseId");
 
-                    b.HasIndex("Title")
-                        .IsUnique();
+                    b.HasIndex(new[] { "Title" }, "IX_Course_Title");
 
                     b.ToTable("Courses");
 
@@ -62,9 +58,9 @@ namespace ExamPrepWeb.Migrations
                         new
                         {
                             CourseId = 1,
-                            Description = "Подготовка к ЕГЭ по математике",
+                            Description = "Профильный уровень.",
                             Price = 5000m,
-                            StartDate = new DateTime(2026, 9, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            StartDate = new DateTime(2026, 8, 19, 7, 24, 20, 125, DateTimeKind.Local).AddTicks(7336),
                             Subject = "Математика",
                             TeacherName = "Иванов И.И.",
                             Title = "Математика ЕГЭ"
@@ -72,9 +68,9 @@ namespace ExamPrepWeb.Migrations
                         new
                         {
                             CourseId = 2,
-                            Description = "Подготовка к ЕГЭ по английскому языку",
+                            Description = "Интенсивный курс.",
                             Price = 7500m,
-                            StartDate = new DateTime(2026, 9, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            StartDate = new DateTime(2026, 9, 2, 7, 24, 20, 125, DateTimeKind.Local).AddTicks(7336),
                             Subject = "Английский",
                             TeacherName = "Петрова А.С.",
                             Title = "Английский язык ЕГЭ"
@@ -82,9 +78,9 @@ namespace ExamPrepWeb.Migrations
                         new
                         {
                             CourseId = 3,
-                            Description = "Подготовка к ЕГЭ по информатике",
+                            Description = "Python & C++.",
                             Price = 6000m,
-                            StartDate = new DateTime(2026, 10, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            StartDate = new DateTime(2026, 9, 19, 7, 24, 20, 125, DateTimeKind.Local).AddTicks(7336),
                             Subject = "Информатика",
                             TeacherName = "Сидоров В.К.",
                             Title = "Информатика ЕГЭ"
@@ -101,7 +97,7 @@ namespace ExamPrepWeb.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("EnrollmentDate")
-                        .HasColumnType("datetime");
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("StudentId")
                         .HasColumnType("INTEGER");
@@ -110,7 +106,8 @@ namespace ExamPrepWeb.Migrations
 
                     b.HasIndex("CourseId");
 
-                    b.HasIndex("StudentId");
+                    b.HasIndex(new[] { "StudentId", "CourseId" }, "IX_UniqueEnrollment")
+                        .IsUnique();
 
                     b.ToTable("Enrollments");
                 });
@@ -126,20 +123,23 @@ namespace ExamPrepWeb.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasMaxLength(100)
+                        .HasMaxLength(150)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
-                        .HasMaxLength(50)
+                        .HasMaxLength(100)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("LastName")
                         .IsRequired()
-                        .HasMaxLength(50)
+                        .HasMaxLength(100)
                         .HasColumnType("TEXT");
 
                     b.HasKey("StudentId");
+
+                    b.HasIndex(new[] { "Email" }, "IX_UniqueEmail")
+                        .IsUnique();
 
                     b.ToTable("Students");
                 });
