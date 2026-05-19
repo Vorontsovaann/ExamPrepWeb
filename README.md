@@ -72,14 +72,20 @@ dotnet run
 # Запуск через Docker (Production)
 
 ```bash
-# Собрать и запустить контейнер
-docker-compose up -d
+# 1. Собрать и запустить контейнер
+docker-compose up -d --build
 
-# Просмотр логов
+# 2. Проверить статус контейнера
+docker-compose ps
+
+# 3. Просмотр логов в реальном времени
 docker-compose logs -f
 
-# Остановка
+# 4. Остановить приложение
 docker-compose down
+
+# 5. Остановить и удалить volume (база данных)
+docker-compose down -v
 ```
 
 Открыть: http://localhost:8018
@@ -91,24 +97,103 @@ docker-compose down
 ## 🗂 Структура проекта
 ```
 ExamPrepWeb/
-├── Components/          # Blazor-интерфейс
-│   ├── Api/             # REST-контроллеры
-│   ├── Layout/          # Шаблоны (MainLayout, NavMenu)
-│   └── Pages/           # Страницы (Index, Courses, Enrollment)
-├── Data/                # Слой доступа к данным
-│   ├── Repositories/    # Паттерн Repository
-│   ├── Migrations/      # Миграции EF Core
-│   └── AppDbContext.cs  # Контекст БД + Fluent API
-├── Models/              # EF-сущности и DTO
-├── Services/            # Бизнес-логика (CourseService)
-├── Validators/          # Правила FluentValidation
-├── wwwroot/             # Статика (CSS, JS, изображения)
-├── .editorconfig        # Правила оформления кода
-├── Dockerfile           # Multi-stage сборка
-├── docker-compose.yml   # Оркестрация контейнера
-└── README.md            # Документация
+│
+├── 📁 Components/                 # Blazor-интерфейс
+│   ├── 📁 Api/                    # REST API контроллеры
+│   │   └── EnrollmentController.cs
+│   ├── 📁 Layout/                 # Шаблоны страниц
+│   │   ├── MainLayout.razor
+│   │   ├── MainLayout.razor.css
+│   │   ├── NavMenu.razor
+│   │   └── NavMenu.razor.css
+│   ├── 📁 Pages/                  # Страницы приложения
+│   │   ├── Index.razor           # Главная
+│   │   ├── Courses.razor         # Каталог курсов
+│   │   └── Enrollment.razor      # Форма записи
+│   ├── App.razor                 # Корневой компонент
+│   ├── Routes.razor              # Конфигурация роутинга
+│   └── _Imports.razor            # Глобальные using-директивы
+│
+├── 📁 Data/                       # Слой доступа к данным
+│   ├── 📁 Repositories/          # Паттерн Repository
+│   │   ├── ICourseRepository.cs
+│   │   └── CourseRepository.cs
+│   ├── 📁 Migrations/            # Миграции EF Core
+│   │   ├── 20260516174158_InitialCreate.cs
+│   │   ├── 20260516174158_InitialCreate.Designer.cs
+│   │   └── AppDbContextModelSnapshot.cs
+│   └── AppDbContext.cs           # Контекст БД + Fluent API
+│
+├── 📁 Models/                     # EF-сущности и DTO
+│   ├── Student.cs
+│   ├── Course.cs
+│   ├── Enrollment.cs
+│   └── EnrollmentRequest.cs
+│   
+│
+├──  Services/                   # Бизнес-логика
+│   ├── ICourseService.cs
+│   └── CourseService.cs
+│
+├── 📁 Validators/                 # Правила FluentValidation
+│   └── EnrollmentRequestValidator.cs
+│
+├──  wwwroot/                    # Статические файлы (CSS, JS, images)
+│
+├── 📄 .editorconfig              # Правила оформления кода
+├── 📄 .gitignore                 # Исключения для Git
+├── 📄 .dockerignore              # Исключения для Docker
+├── 📄 appsettings.json           # Конфигурация приложения
+├── 📄 appsettings.Development.json
+├──  Dockerfile                 # Multi-stage сборка
+├── 📄 docker-compose.yml         # Оркестрация контейнеров
+├── 📄 ExamPrepWeb.csproj         # Файл проекта .NET
+└──  README.md                  # Документация
 ```
-
+```
+┌─────────────────────────────────────────┐
+│            Клиент (Браузер)             │
+│  ┌─────────────────────────────────┐    │
+│  │  Blazor Server Components       │    │
+│  │  • Index.razor                  │    │
+│  │  • Courses.razor                │    │
+│  │  • Enrollment.razor             │    │
+│  └─────────────────────────────────┘    │
+└─────────────────────────────────────────┘
+                 │ SignalR (WebSocket)
+                 ▼
+┌─────────────────────────────────────────┐
+│         ASP.NET Core Server             │
+│  ┌─────────────────────────────────┐    │
+│  │  Controllers (API)              │    │
+│  │  • EnrollmentController         │    │
+│  └─────────────────────────────────┘    │
+│  ┌─────────────────────────────────┐    │
+│  │  Services (Business Logic)      │    │
+│  │  • CourseService                │    │
+│  └─────────────────────────────────┘    │
+│  ┌─────────────────────────────────┐    │
+│  │  Repositories (Data Access)     │    │
+│  │  • CourseRepository             │    │
+│  └─────────────────────────────────┘    │
+│  ┌─────────────────────────────────┐    │
+│  │  EF Core + SQLite               │    │
+│  │  • AppDbContext                 │    │
+│  │  • Migrations                   │    │
+│  └─────────────────────────────────┘    │
+└────────────────┬────────────────────────
+                 │
+                 ▼
+┌─────────────────────────────────────────┐
+│         База данных (SQLite)            │
+│  ┌─────────────────────────────────┐    │
+│  │  Tables:                        │    │
+│  │  • Students                     │    │
+│  │  • Courses                      │    │
+│  │  • Enrollments                  │    │
+│  └─────────────────────────────────┘    │
+└─────────────────────────────────────────┘
+```
 ---
 
 ## База данных и миграции
