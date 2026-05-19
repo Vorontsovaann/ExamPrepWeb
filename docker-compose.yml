@@ -1,25 +1,20 @@
 version: '3.8'
+
 services:
-  exam-prep-app:
+  webapp:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: exam-prep-v18
+    container_name: examprep_web
     ports:
-      - "${APP_PORT:-8018}:8080"
-    volumes:
-      - sqlite_data:/app/Data
+      - "8080:8080"
+      - "8081:8081"
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
-      - ConnectionStrings__DefaultConnection=Data Source=/app/Data/app.db
+      - ConnectionStrings__DefaultConnection=Data Source=/app/data/app.db;
+    volumes:
+      - sqlite_data:/app/data
     restart: unless-stopped
-    healthcheck:
-      test: ["CMD-SHELL", "wget --spider -q http://localhost:8080/courses || exit 1"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
 
 volumes:
   sqlite_data:
-    driver: local

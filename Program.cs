@@ -1,40 +1,40 @@
 using ExamPrepWeb.Data;
-using ExamPrepWeb.Data.Repositories;  // ← ДОБАВЛЕНО!
+using ExamPrepWeb.Data.Repositories;
 using ExamPrepWeb.Services;
 using Microsoft.EntityFrameworkCore;
 using ExamPrepWeb.Components;
-using FluentValidation;               // ← ДОБАВЛЕНО!
-using FluentValidation.AspNetCore;    // ← ДОБАВЛЕНО!
+using FluentValidation;
+using FluentValidation.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// 1. Подключение БД (SQLite)
+// 1. DbContext (SQLite)
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// 2. Регистрация РЕПОЗИТОРИЯ (ДОБАВЛЕНО!)
+// 2. DI: Репозиторий
 builder.Services.AddScoped<ICourseRepository, CourseRepository>();
 
-// 3. Регистрация сервисов (DI)
+// 3. DI: Сервис
 builder.Services.AddScoped<ICourseService, CourseService>();
 
-// 4. Поддержка API контроллеров
+// 4. API Controllers
 builder.Services.AddControllers();
 
-// 5. РЕГИСТРАЦИЯ FLUENTVALIDATION (ДОБАВЛЕНО!)
-builder.Services.AddFluentValidationAutoValidation();
+// 5. FluentValidation
+builder.Services.AddFluentValidationAutoValidation(config =>
+{
+    config.DisableDataAnnotationsValidation = true;
+});
 builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 
 // 6. Blazor Server
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
-// 7. Логирование
-builder.Services.AddLogging();
-
 var app = builder.Build();
 
-// 8. Middleware pipeline
+// 7. Middleware
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error", createScopeForErrors: true);
@@ -45,25 +45,21 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseAntiforgery();
 
-// 9. Маршрутизация API
+// 8. Routing
 app.MapControllers();
-
-// 10. Маршрутизация Blazor
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
 
-// 11. Применение миграций / создание БД
+// 9. Миграции + Seed (ВСЕГДА используем Migrate!)
 using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    if (app.Environment.IsDevelopment())
-    {
-        context.Database.EnsureCreated();
-    }
-    else
-    {
-        context.Database.Migrate();
-    }
+    
+    // Применяем миграции (вместо EnsureCreated)
+    context.Database.Migrate();
+    
+    // Заполняем БД, если она пустая
+    AppDbContext.SeedData(context);
 }
 
 app.Run();
