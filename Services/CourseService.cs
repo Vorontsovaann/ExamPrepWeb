@@ -1,6 +1,6 @@
 using ExamPrepWeb.Data;
 using ExamPrepWeb.Models;
-using Microsoft.EntityFrameworkCore;  // ← Для DbUpdateException
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace ExamPrepWeb.Services

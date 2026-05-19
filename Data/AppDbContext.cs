@@ -28,24 +28,21 @@ namespace ExamPrepWeb.Data
                 .HasForeignKey(e => e.CourseId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // ️ SeedData(modelBuilder) УДАЛЕН отсюда!
+            SeedData(modelBuilder);
         }
 
-        /// <summary>Заполняет БД начальными данными при первом запуске.</summary>
-        public static void SeedData(AppDbContext context)
+        private void SeedData(ModelBuilder modelBuilder)
         {
-            if (context.Courses.Any()) return; // Защита от дублирования
+            var baseDate = DateTime.Now.AddMonths(3);
 
-            var startDate = new DateTime(2026, 09, 01); // Фиксированная дата
-
-            context.Courses.AddRange(
+            modelBuilder.Entity<Course>().HasData(
                 new Course
                 {
                     CourseId = 1,
                     Title = "Математика ЕГЭ",
                     Subject = "Математика",
                     Price = 5000m,
-                    StartDate = startDate,
+                    StartDate = baseDate,
                     TeacherName = "Иванов И.И.",
                     Description = "Профильный уровень."
                 },
@@ -55,7 +52,7 @@ namespace ExamPrepWeb.Data
                     Title = "Английский язык ЕГЭ",
                     Subject = "Английский",
                     Price = 7500m,
-                    StartDate = startDate.AddDays(14),
+                    StartDate = baseDate.AddDays(14),
                     TeacherName = "Петрова А.С.",
                     Description = "Интенсивный курс."
                 },
@@ -65,13 +62,11 @@ namespace ExamPrepWeb.Data
                     Title = "Информатика ЕГЭ",
                     Subject = "Информатика",
                     Price = 6000m,
-                    StartDate = startDate.AddMonths(1),
+                    StartDate = baseDate.AddMonths(1),
                     TeacherName = "Сидоров В.К.",
                     Description = "Python & C++."
                 }
             );
-
-            context.SaveChanges();
         }
     }
 }

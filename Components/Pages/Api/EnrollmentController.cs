@@ -34,20 +34,19 @@ namespace ExamPrepWeb.Components.Api
                 return StatusCode(500, new EnrollmentResponse { Success = false, Message = "Внутренняя ошибка сервера" });
             }
         }
-    }
 
-    // Классы запроса/ответа
-    public class EnrollmentRequest
-    {
-        [Required] public string Fio { get; set; } = string.Empty; // ИСПРАВЛЕНО
-        [Required] public string Tel { get; set; } = string.Empty; // ИСПРАВЛЕНО
-        [Required][EmailAddress] public string Email { get; set; } = string.Empty; // ИСПРАВЛЕНО
-        [Required][Range(1, int.MaxValue)] public int CourseId { get; set; }
-    }
+        public class EnrollmentRequest
+        {
+            [Required] public string Fio { get; set; } = string.Empty;
+            [Required] public string Tel { get; set; } = string.Empty;
+            [Required][EmailAddress] public string Email { get; set; } = string.Empty;
+            [Required][Range(1, int.MaxValue)] public int CourseId { get; set; }
+        }
 
-    public class EnrollmentResponse
-    {
-        public bool Success { get; set; }
-        public string Message { get; set; } = string.Empty; // ИСПРАВЛЕНО
+        public class EnrollmentResponse
+        {
+            public bool Success { get; set; }
+            public string Message { get; set; } = string.Empty;
+        }
     }
 }

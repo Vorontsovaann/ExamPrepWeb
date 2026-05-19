@@ -1,5 +1,5 @@
 using FluentValidation;
-using ExamPrepWeb.Models;  // ← ИСПОЛЬЗУЕМ Models!
+using ExamPrepWeb.Models;
 
 namespace ExamPrepWeb.Validators
 {
