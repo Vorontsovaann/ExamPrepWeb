@@ -20,6 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <!-- ПРОВЕРЬТЕ ЭТОТ ПУТЬ! -->
     <ProjectReference Include="..\ExamPrepWeb.csproj" />
   </ItemGroup>
 </Project>

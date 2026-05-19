@@ -6562,11 +6562,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "c:\\Users\\Anna\\Desktop\\ksipo\\ExamPrepWeb\\ExamPrepWeb.csproj",
+      "projectUniqueName": "C:\\Users\\Anna\\Desktop\\ksipo\\ExamPrepWeb\\ExamPrepWeb.csproj",
       "projectName": "ExamPrepWeb",
-      "projectPath": "c:\\Users\\Anna\\Desktop\\ksipo\\ExamPrepWeb\\ExamPrepWeb.csproj",
+      "projectPath": "C:\\Users\\Anna\\Desktop\\ksipo\\ExamPrepWeb\\ExamPrepWeb.csproj",
       "packagesPath": "C:\\Users\\Anna\\.nuget\\packages\\",
-      "outputPath": "c:\\Users\\Anna\\Desktop\\ksipo\\ExamPrepWeb\\obj\\",
+      "outputPath": "C:\\Users\\Anna\\Desktop\\ksipo\\ExamPrepWeb\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Anna\\AppData\\Roaming\\NuGet\\NuGet.Config",
