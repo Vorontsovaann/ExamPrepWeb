@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Anna\\Desktop\\ksipo\\ExamPrepWeb\\ExamPrepWeb\\ExamPrepWeb.csproj": {}
+    "c:\\Users\\Anna\\Desktop\\ksipo\\ExamPrepWeb\\ExamPrepWeb.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Anna\\Desktop\\ksipo\\ExamPrepWeb\\ExamPrepWeb\\ExamPrepWeb.csproj": {
+    "c:\\Users\\Anna\\Desktop\\ksipo\\ExamPrepWeb\\ExamPrepWeb.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Anna\\Desktop\\ksipo\\ExamPrepWeb\\ExamPrepWeb\\ExamPrepWeb.csproj",
+        "projectUniqueName": "c:\\Users\\Anna\\Desktop\\ksipo\\ExamPrepWeb\\ExamPrepWeb.csproj",
         "projectName": "ExamPrepWeb",
-        "projectPath": "C:\\Users\\Anna\\Desktop\\ksipo\\ExamPrepWeb\\ExamPrepWeb\\ExamPrepWeb.csproj",
+        "projectPath": "c:\\Users\\Anna\\Desktop\\ksipo\\ExamPrepWeb\\ExamPrepWeb.csproj",
         "packagesPath": "C:\\Users\\Anna\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Anna\\Desktop\\ksipo\\ExamPrepWeb\\ExamPrepWeb\\obj\\",
+        "outputPath": "c:\\Users\\Anna\\Desktop\\ksipo\\ExamPrepWeb\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Anna\\AppData\\Roaming\\NuGet\\NuGet.Config",

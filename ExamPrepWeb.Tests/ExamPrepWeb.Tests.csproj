@@ -18,9 +18,4 @@
     <PackageReference Include="FluentAssertions" Version="6.12.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="8.0.0" />
   </ItemGroup>
-
-  <ItemGroup>
-    <!-- Исправленный путь - на две папки вверх -->
-    <ProjectReference Include="..\ExamPrepWeb\ExamPrepWeb.csproj" />
-  </ItemGroup>
 </Project>
