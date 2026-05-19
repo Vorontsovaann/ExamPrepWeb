@@ -65,11 +65,13 @@ dotnet ef database update
 
 # 4. Запустить приложение
 dotnet run
+```
 
 Открыть: https://localhost:5035 или http://localhost:5035
 
-Запуск через Docker (Production)
+# Запуск через Docker (Production)
 
+```bash
 # Собрать и запустить контейнер
 docker-compose up -d
 
@@ -78,34 +80,34 @@ docker-compose logs -f
 
 # Остановка
 docker-compose down
+```
 
 Открыть: http://localhost:8018
 
 ! Примечание: Данные SQLite сохраняются в Docker-volume sqlite_data, поэтому записи студентов и курсы не пропадают при перезапуске контейнера.
 
-```
-
 --- 
 
 ## 🗂 Структура проекта
-
+```
 ExamPrepWeb/
-├── Components/              # Blazor-интерфейс
-│   ├── Api/                 # REST-контроллеры
-│   ├── Layout/              # Шаблоны (MainLayout, NavMenu)
-│   └── Pages/               # Страницы (Index, Courses, Enrollment)
-├── Data/                    # Слой доступа к данным
-│   ├── Repositories/        # Паттерн Repository
-│   ├── Migrations/          # Миграции EF Core
-│   └── AppDbContext.cs      # Контекст БД + Fluent API конфигурация
-├── Models/                  # EF-сущности и DTO
-├── Services/                # Бизнес-логика (CourseService)
-├── Validators/              # Правила FluentValidation
-├── wwwroot/                 # Статика (CSS, JS, изображения)
-├── .editorconfig            # Правила оформления кода
-├── Dockerfile               # Multi-stage сборка
-├── docker-compose.yml       # Оркестрация контейнера
-└── README.md                # Документация
+├── Components/          # Blazor-интерфейс
+│   ├── Api/             # REST-контроллеры
+│   ├── Layout/          # Шаблоны (MainLayout, NavMenu)
+│   └── Pages/           # Страницы (Index, Courses, Enrollment)
+├── Data/                # Слой доступа к данным
+│   ├── Repositories/    # Паттерн Repository
+│   ├── Migrations/      # Миграции EF Core
+│   └── AppDbContext.cs  # Контекст БД + Fluent API
+├── Models/              # EF-сущности и DTO
+├── Services/            # Бизнес-логика (CourseService)
+├── Validators/          # Правила FluentValidation
+├── wwwroot/             # Статика (CSS, JS, изображения)
+├── .editorconfig        # Правила оформления кода
+├── Dockerfile           # Multi-stage сборка
+├── docker-compose.yml   # Оркестрация контейнера
+└── README.md            # Документация
+```
 
 ---
 
