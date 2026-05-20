@@ -1,6 +1,6 @@
-using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
 using ExamPrepWeb.Services;
+using ExamPrepWeb.Models;
 
 namespace ExamPrepWeb.Components.Api
 {
@@ -33,20 +33,6 @@ namespace ExamPrepWeb.Components.Api
                 _logger.LogError(ex, "Ошибка API записи");
                 return StatusCode(500, new EnrollmentResponse { Success = false, Message = "Внутренняя ошибка сервера" });
             }
-        }
-
-        public class EnrollmentRequest
-        {
-            [Required] public string Fio { get; set; } = string.Empty;
-            [Required] public string Tel { get; set; } = string.Empty;
-            [Required][EmailAddress] public string Email { get; set; } = string.Empty;
-            [Required][Range(1, int.MaxValue)] public int CourseId { get; set; }
-        }
-
-        public class EnrollmentResponse
-        {
-            public bool Success { get; set; }
-            public string Message { get; set; } = string.Empty;
         }
     }
 }

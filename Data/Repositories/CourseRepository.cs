@@ -22,7 +22,6 @@ namespace ExamPrepWeb.Data.Repositories
             return await _context.Courses.FindAsync(id);
         }
 
-        // НОВЫЕ МЕТОДЫ ДЛЯ СТУДЕНТОВ
         public async Task<Student?> GetStudentByEmailAsync(string email)
         {
             return await _context.Students.FirstOrDefaultAsync(s => s.Email == email);

@@ -3,7 +3,6 @@ using ExamPrepWeb.Models;
 
 namespace ExamPrepWeb.Data
 {
-    /// <summary>Контекст базы данных приложения.</summary>
     public class AppDbContext : DbContext
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
