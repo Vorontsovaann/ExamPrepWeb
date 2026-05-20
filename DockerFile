@@ -1,35 +1,31 @@
-# Этап 1: Сборка (Build)
+# Этап 1: Сборка
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
-# Копируем только файл проекта для кэширования
+# Копируем файл проекта
 COPY ["ExamPrepWeb.csproj", "./"]
 RUN dotnet restore "ExamPrepWeb.csproj"
 
 # Копируем все остальные файлы
 COPY . .
 
-# Компилируем
+# Собираем и публикуем
 RUN dotnet build "ExamPrepWeb.csproj" -c Release -o /app/build
-
-# Публикуем
 RUN dotnet publish "ExamPrepWeb.csproj" -c Release -o /app/publish
 
-# Этап 2: Запуск (Runtime)
+# Этап 2: Запуск
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
 WORKDIR /app
 
-# Копируем результат сборки из этапа 1
-COPY --from=build /app/publish .
-
-# Создаем папку для БД
+# Создаем папку для базы данных
 RUN mkdir -p /app/Data
+
+# Копируем результат сборки
+COPY --from=build /app/publish .
 
 EXPOSE 8080
 
-# Настройки окружения
 ENV ASPNETCORE_URLS=http://+:8080
 ENV ASPNETCORE_ENVIRONMENT=Production
 
-# Запуск приложения
 ENTRYPOINT ["dotnet", "ExamPrepWeb.dll"]
